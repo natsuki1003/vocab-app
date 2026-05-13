@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocabulary Card Player</title>
+
+  <style>
+    :root {
+      --bg: #0b0b0d;
+      --card: #111113;
+      --panel: #1c1c1e;
+      --panel-soft: rgba(255, 255, 255, 0.045);
+      --text: #f5f5f7;
+      --subtext: #d1d1d6;
+      --muted: #8e8e93;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-soft: rgba(255, 255, 255, 0.05);
+      --button: #1c1c1e;
+      --button-hover: #2c2c2e;
+      --accent: #f5f5f7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 760px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--subtext);
+      border: 1px solid var(--border-soft);
+      white-space: nowrap;
+    }
+
+    .card {
+      width: 100%;
+      padding: 34px;
+      border-radius: 28px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    }
+
+    .word-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .word {
+      font-size: clamp(44px, 8vw, 72px);
+      font-weight: 700;
+      letter-spacing: -2.2px;
+      line-height: 1.02;
+    }
+
+    .icon-button {
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #1c1c1e;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      flex: 0 0 auto;
+    }
+
+    .icon-button:hover {
+      transform: scale(1.03);
+    }
+
+    .icon-button:active {
+      opacity: 0.75;
+      transform: scale(0.98);
+    }
+
+    .play-icon {
+      width: 0;
+      height: 0;
+      border-top: 13px solid transparent;
+      border-bottom: 13px solid transparent;
+      border-left: 20px solid #1c1c1e;
+      margin-left: 4px;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      font-size: 14px;
+      color: var(--subtext);
+      background: var(--panel);
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+    }
+
+    .meaning-block {
+      padding: 24px;
+      border-radius: 24px;
+      background: var(--panel);
+      border: 1px solid var(--border-soft);
+      margin-bottom: 16px;
+    }
+
+    .meaning-main {
+      font-size: clamp(30px, 5vw, 42px);
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -0.6px;
+      margin-bottom: 8px;
+    }
+
+    .short-meaning {
+      font-size: 19px;
+      color: var(--subtext);
+      line-height: 1.6;
+    }
+
+    .detail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .detail-block {
+      padding: 20px 22px;
+      border-radius: 22px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border-soft);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .info-label {
+      font-size: 12px;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .info-content {
+      font-size: 19px;
+      line-height: 1.75;
+      color: var(--text);
+      white-space: pre-line;
+    }
+
+    .example-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .example-en {
+      flex: 1;
+      font-size: 21px;
+      line-height: 1.65;
+      color: var(--text);
+      font-weight: 600;
+      white-space: pre-line;
+    }
+
+    .example-ja {
+      margin-top: 10px;
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--subtext);
+      white-space: pre-line;
+    }
+
+    .small-audio {
+      width: 44px;
+      height: 44px;
+      margin-top: 3px;
+    }
+
+    .small-audio .play-icon {
+      border-top-width: 10px;
+      border-bottom-width: 10px;
+      border-left-width: 15px;
+    }
+
+    .controls {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: grid;
+      gap: 12px;
+    }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      appearance: none;
+      -webkit-appearance: none;
+      min-width: 118px;
+      height: 44px;
+      border: none;
+      outline: none;
+      padding: 0 18px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--button);
+      cursor: pointer;
+      transition: opacity 0.15s ease, background 0.15s ease;
+    }
+
+    .action-btn:hover {
+      background: var(--button-hover);
+    }
+
+    .action-btn:active {
+      opacity: 0.75;
+    }
+
+    .action-btn.primary {
+      color: #1c1c1e;
+      background: var(--accent);
+    }
+
+    .setting-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .setting-box {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid var(--border-soft);
+    }
+
+    .setting-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    select,
+    input[type="range"] {
+      width: 100%;
+    }
+
+    select {
+      height: 36px;
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 0 10px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+    }
+
+    .notice {
+      min-height: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media screen and (max-width: 480px) {
+      body {
+        padding: 10px;
+        align-items: flex-start;
+      }
+
+      .card {
+        padding: 24px;
+        border-radius: 26px;
+      }
+
+      .word {
+        letter-spacing: -1.5px;
+      }
+
+      .icon-button {
+        width: 48px;
+        height: 48px;
+      }
+
+      .play-icon {
+        border-top-width: 11px;
+        border-bottom-width: 11px;
+        border-left-width: 17px;
+      }
+
+      .meaning-block {
+        padding: 20px;
+        border-radius: 22px;
+      }
+
+      .short-meaning,
+      .info-content,
+      .example-en,
+      .example-ja {
+        font-size: 17px;
+      }
+
+      .detail-block {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .setting-row {
+        grid-template-columns: 1fr;
+      }
+
+      .action-btn {
+        min-width: 104px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div class="top-bar">
+      <div id="progressText">Loading...</div>
+      <div class="status-pill" id="statusText">Ready</div>
+    </div>
+
+    <section class="card" aria-live="polite">
+      <div class="word-row">
+        <div class="word" id="wordText">Loading</div>
+        <button class="icon-button" id="speakWordBtn" type="button" aria-label="Play word audio">
+          <span class="play-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <div class="meta-row">
+        <span class="chip" id="partOfSpeech">---</span>
+        <span class="chip" id="pronunciation">---</span>
+      </div>
+
+      <div class="meaning-block">
+        <div class="meaning-main" id="meaningMain">読み込み中</div>
+        <div class="short-meaning" id="shortMeaning">Please wait...</div>
+      </div>
+
+      <div class="detail-list">
+        <section class="detail-block" id="collocationBlock">
+          <div class="info-label">Collocation</div>
+          <div class="info-content" id="collocationText"></div>
+        </section>
+
+        <section class="detail-block" id="nuanceBlock">
+          <div class="info-label">Nuance</div>
+          <div class="info-content" id="nuanceText"></div>
+        </section>
+
+        <section class="detail-block" id="exampleBlock">
+          <div class="info-label">Example</div>
+          <div class="example-line">
+            <div class="example-en" id="exampleText"></div>
+            <button class="icon-button small-audio" id="speakExampleBtn" type="button" aria-label="Play example audio">
+              <span class="play-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="example-ja" id="exampleJa"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="controls">
+      <div class="button-row">
+        <button class="action-btn" id="prevBtn" type="button">Prev</button>
+        <button class="action-btn primary" id="autoPlayBtn" type="button">Start</button>
+        <button class="action-btn" id="nextBtn" type="button">Next</button>
+      </div>
+
+      <div class="button-row">
+        <button class="action-btn" id="replayBtn" type="button">Replay</button>
+        <button class="action-btn" id="copyBtn" type="button">Copy</button>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-box">
+          <div class="setting-label">Voice</div>
+          <select id="voiceSelect">
+            <option value="">Loading voices...</option>
+          </select>
+        </div>
+
+        <div class="setting-box">
+          <div class="setting-label">Speed: <span id="rateValue">0.85</span></div>
+          <input id="rateSlider" type="range" min="0.6" max="1.2" step="0.05" value="0.85" />
+        </div>
+      </div>
+
+      <div class="notice" id="noticeText">CSVデータを読み込みます。最初だけStartを押すと自動再生できます。</div>
+    </section>
+  </main>
+
+  <script>
+    /*
+      Data source
+      1. 一番簡単: index.html と同じ場所に vocab.csv を置く
+         const DATA_SOURCE_URL = "./vocab.csv";
+
+      2. Googleスプレッドシートを公開CSVとして使う場合:
+         const DATA_SOURCE_URL = "https://docs.google.com/spreadsheets/d/e/公開ID/pub?output=csv";
+    */
+    const DATA_SOURCE_URL = "./vocab.csv";
+
+    const FALLBACK_CSV = `word,part_of_speech,pronunciation,meaning_ja,short_meaning_en,collocation,nuance_ja,example_en,example_ja
+pensioner,noun,/ˈpenʃənər/,年金生活者・年金受給者,an old person who receives a pension,elderly pensioners / retired pensioners / support pensioners,主にイギリス英語で、高齢で年金を受け取っている人を指す。,Many pensioners struggle to pay for housing and medical care.,多くの年金生活者は、住居費や医療費を支払うのに苦労している。
+mitigate,verb,/ˈmɪtɪɡeɪt/,軽減する・和らげる,to make a problem less serious,mitigate climate change / mitigate risks / mitigate negative effects,問題・影響・リスクを完全に消すのではなく、深刻さを小さくする時に使う。,Governments should invest in public transport to mitigate air pollution.,政府は大気汚染を軽減するために公共交通に投資すべきだ。
+equitable,adjective,/ˈekwɪtəbl/,公平な・公正な,fair and reasonable,equitable access / equitable society / equitable distribution,equalが「同じ」に近いのに対して、equitableは状況に応じて公平になるよう配慮するニュアンスがある。,All children should have equitable access to quality education.,すべての子どもは質の高い教育を公平に受けられるべきだ。`;
+
+    let cards = [];
+    let currentIndex = 0;
+    let voices = [];
+    let isAutoPlaying = false;
+    let autoPlayToken = 0;
+
+    const elements = {
+      progressText: document.getElementById("progressText"),
+      statusText: document.getElementById("statusText"),
+      wordText: document.getElementById("wordText"),
+      partOfSpeech: document.getElementById("partOfSpeech"),
+      pronunciation: document.getElementById("pronunciation"),
+      meaningMain: document.getElementById("meaningMain"),
+      shortMeaning: document.getElementById("shortMeaning"),
+      collocationBlock: document.getElementById("collocationBlock"),
+      nuanceBlock: document.getElementById("nuanceBlock"),
+      exampleBlock: document.getElementById("exampleBlock"),
+      collocationText: document.getElementById("collocationText"),
+      nuanceText: document.getElementById("nuanceText"),
+      exampleText: document.getElementById("exampleText"),
+      exampleJa: document.getElementById("exampleJa"),
+      speakWordBtn: document.getElementById("speakWordBtn"),
+      speakExampleBtn: document.getElementById("speakExampleBtn"),
+      prevBtn: document.getElementById("prevBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      autoPlayBtn: document.getElementById("autoPlayBtn"),
+      replayBtn: document.getElementById("replayBtn"),
+      copyBtn: document.getElementById("copyBtn"),
+      voiceSelect: document.getElementById("voiceSelect"),
+      rateSlider: document.getElementById("rateSlider"),
+      rateValue: document.getElementById("rateValue"),
+      noticeText: document.getElementById("noticeText")
+    };
+
+    function setNotice(text) {
+      elements.noticeText.textContent = text;
+    }
+
+    function normalizeValue(value) {
+      return value == null ? "" : String(value).trim();
+    }
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let insideQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"') {
+          if (insideQuotes && nextChar === '"') {
+            cell += '"';
+            i++;
+          } else {
+            insideQuotes = !insideQuotes;
+          }
+        } else if (char === "," && !insideQuotes) {
+          row.push(cell);
+          cell = "";
+        } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+          if (char === "\r" && nextChar === "\n") i++;
+          row.push(cell);
+          rows.push(row);
+          row = [];
+          cell = "";
+        } else {
+          cell += char;
+        }
+      }
+
+      if (cell.length > 0 || row.length > 0) {
+        row.push(cell);
+        rows.push(row);
+      }
+
+      const nonEmptyRows = rows.filter(function (r) {
+        return r.some(function (c) { return String(c).trim() !== ""; });
+      });
+
+      if (nonEmptyRows.length < 2) return [];
+
+      const headers = nonEmptyRows[0].map(function (header) {
+        return normalizeValue(header);
+      });
+
+      return nonEmptyRows.slice(1).map(function (r) {
+        const item = {};
+        headers.forEach(function (header, index) {
+          item[header] = normalizeValue(r[index]);
+        });
+        return item;
+      }).filter(function (item) {
+        return item.word || item.example_en || item.meaning_ja;
+      });
+    }
+
+    function convertRowsToCards(rows) {
+      return rows.map(function (row) {
+        return {
+          word: row.word || row["単語"] || "",
+          partOfSpeech: row.part_of_speech || row["品詞"] || "",
+          pronunciation: row.pronunciation || row["発音記号"] || "",
+          meaning: row.meaning_ja || row["意味"] || "",
+          shortMeaning: row.short_meaning_en || row["短い意味"] || "",
+          collocation: row.collocation || row["コロケーション"] || "",
+          nuance: row.nuance_ja || row["ニュアンス解説"] || "",
+          example: row.example_en || row["例文_英語"] || "",
+          exampleJa: row.example_ja || row["例文_日本語"] || ""
+        };
+      }).filter(function (card) {
+        return card.word;
+      });
+    }
+
+    async function loadCards() {
+      try {
+        const response = await fetch(DATA_SOURCE_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error("CSV file could not be loaded.");
+
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+        cards = convertRowsToCards(rows);
+
+        if (!cards.length) throw new Error("No valid cards found.");
+
+        setNotice("CSVデータを読み込みました。Startで自動再生できます。");
+      } catch (error) {
+        const rows = parseCSV(FALLBACK_CSV);
+        cards = convertRowsToCards(rows);
+        setNotice("vocab.csv が見つからないため、サンプルデータを表示しています。");
+      }
+
+      currentIndex = 0;
+      renderCard();
+    }
+
+    function getCurrentCard() {
+      return cards[currentIndex] || null;
+    }
+
+    function toggleBlock(block, value) {
+      if (!block) return;
+      block.classList.toggle("hidden", !value);
+    }
+
+    function renderCard() {
+      const card = getCurrentCard();
+
+      if (!card) {
+        elements.progressText.textContent = "0 / 0";
+        elements.wordText.textContent = "No data";
+        elements.meaningMain.textContent = "データがありません";
+        elements.shortMeaning.textContent = "vocab.csvを確認してください。";
+        return;
+      }
+
+      elements.progressText.textContent = `${currentIndex + 1} / ${cards.length}`;
+      elements.wordText.textContent = card.word;
+      elements.partOfSpeech.textContent = card.partOfSpeech || "---";
+      elements.pronunciation.textContent = card.pronunciation || "---";
+      elements.meaningMain.textContent = card.meaning || "---";
+      elements.shortMeaning.textContent = card.shortMeaning || "";
+      elements.collocationText.textContent = card.collocation || "";
+      elements.nuanceText.textContent = card.nuance || "";
+      elements.exampleText.textContent = card.example || "";
+      elements.exampleJa.textContent = card.exampleJa || "";
+
+      toggleBlock(elements.collocationBlock, card.collocation);
+      toggleBlock(elements.nuanceBlock, card.nuance);
+      toggleBlock(elements.exampleBlock, card.example || card.exampleJa);
+    }
+
+    function loadVoices() {
+      voices = window.speechSynthesis.getVoices();
+
+      const englishVoices = voices.filter(function (voice) {
+        return voice.lang && voice.lang.toLowerCase().startsWith("en");
+      });
+
+      elements.voiceSelect.innerHTML = "";
+
+      if (englishVoices.length === 0) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "Default English voice";
+        elements.voiceSelect.appendChild(option);
+        return;
+      }
+
+      englishVoices.forEach(function (voice) {
+        const option = document.createElement("option");
+        option.value = voice.name;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        elements.voiceSelect.appendChild(option);
+      });
+
+      const preferred = englishVoices.find(function (voice) {
+        const name = voice.name.toLowerCase();
+        return name.includes("samantha") || name.includes("daniel") || name.includes("google") || name.includes("natural");
+      });
+
+      if (preferred) {
+        elements.voiceSelect.value = preferred.name;
+      }
+    }
+
+    function getSelectedVoice() {
+      const selectedName = elements.voiceSelect.value;
+      return voices.find(function (voice) {
+        return voice.name === selectedName;
+      }) || null;
+    }
+
+    function speak(text) {
+      return new Promise(function (resolve, reject) {
+        if (!text) {
+          resolve();
+          return;
+        }
+
+        if (!("speechSynthesis" in window)) {
+          reject(new Error("This browser does not support speech synthesis."));
+          return;
+        }
+
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "en-US";
+        utterance.rate = Number(elements.rateSlider.value);
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        const selectedVoice = getSelectedVoice();
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+          utterance.lang = selectedVoice.lang;
+        }
+
+        utterance.onstart = function () {
+          elements.statusText.textContent = "Speaking";
+        };
+
+        utterance.onend = function () {
+          elements.statusText.textContent = isAutoPlaying ? "Auto" : "Ready";
+          resolve();
+        };
+
+        utterance.onerror = function (event) {
+          elements.statusText.textContent = "Ready";
+          reject(event.error || new Error("Speech error."));
+        };
+
+        window.speechSynthesis.speak(utterance);
+      });
+    }
+
+    function wait(ms) {
+      return new Promise(function (resolve) {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    async function playCurrentCardSequence(token) {
+      const card = getCurrentCard();
+      if (!card) return;
+
+      try {
+        await speak(card.word);
+        if (token !== autoPlayToken) return;
+
+        await wait(700);
+        if (token !== autoPlayToken) return;
+
+        await speak(card.example);
+        if (token !== autoPlayToken) return;
+
+        await wait(1200);
+      } catch (error) {
+        setNotice("音声を再生できませんでした。別のVoiceを選ぶか、もう一度Startを押してください。");
+        stopAutoPlay();
+      }
+    }
+
+    async function startAutoPlay() {
+      if (isAutoPlaying) {
+        stopAutoPlay();
+        return;
+      }
+
+      if (!cards.length) {
+        setNotice("カードデータがありません。");
+        return;
+      }
+
+      isAutoPlaying = true;
+      autoPlayToken++;
+      const token = autoPlayToken;
+      elements.autoPlayBtn.textContent = "Stop";
+      elements.statusText.textContent = "Auto";
+      setNotice("Auto play: word → example → next card.");
+
+      while (isAutoPlaying && token === autoPlayToken) {
+        renderCard();
+        await playCurrentCardSequence(token);
+
+        if (!isAutoPlaying || token !== autoPlayToken) break;
+
+        currentIndex = (currentIndex + 1) % cards.length;
+        renderCard();
+      }
+    }
+
+    function stopAutoPlay() {
+      isAutoPlaying = false;
+      autoPlayToken++;
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      elements.autoPlayBtn.textContent = "Start";
+      elements.statusText.textContent = "Ready";
+    }
+
+    function goToPreviousCard() {
+      stopAutoPlay();
+      if (!cards.length) return;
+      currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+      renderCard();
+    }
+
+    function goToNextCard() {
+      stopAutoPlay();
+      if (!cards.length) return;
+      currentIndex = (currentIndex + 1) % cards.length;
+      renderCard();
+    }
+
+    function copyCurrentWord() {
+      const card = getCurrentCard();
+      if (!card) return;
+
+      const word = card.word;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(word)
+          .then(function () {
+            setNotice(`Copied: ${word}`);
+          })
+          .catch(function () {
+            setNotice("Copy failed.");
+          });
+      } else {
+        setNotice("Copy is not supported in this browser.");
+      }
+    }
+
+    elements.speakWordBtn.addEventListener("click", function () {
+      stopAutoPlay();
+      const card = getCurrentCard();
+      if (!card) return;
+      speak(card.word).catch(function () {
+        setNotice("音声を再生できませんでした。");
+      });
+    });
+
+    elements.speakExampleBtn.addEventListener("click", function () {
+      stopAutoPlay();
+      const card = getCurrentCard();
+      if (!card) return;
+      speak(card.example).catch(function () {
+        setNotice("音声を再生できませんでした。");
+      });
+    });
+
+    elements.prevBtn.addEventListener("click", goToPreviousCard);
+    elements.nextBtn.addEventListener("click", goToNextCard);
+    elements.autoPlayBtn.addEventListener("click", startAutoPlay);
+
+    elements.replayBtn.addEventListener("click", async function () {
+      stopAutoPlay();
+      const token = ++autoPlayToken;
+      await playCurrentCardSequence(token);
+    });
+
+    elements.copyBtn.addEventListener("click", copyCurrentWord);
+
+    elements.rateSlider.addEventListener("input", function () {
+      elements.rateValue.textContent = elements.rateSlider.value;
+    });
+
+    if ("speechSynthesis" in window) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    } else {
+      elements.voiceSelect.innerHTML = '<option value="">Not supported</option>';
+      setNotice("このブラウザは音声読み上げに対応していません。");
+    }
+
+    loadCards();
+  </script>
+</body>
+</html>
