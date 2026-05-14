@@ -405,7 +405,7 @@
 
       <div class="meaning-block">
         <div class="meaning-main" id="meaningMain">読み込み中</div>
-        <div class="short-meaning" id="shortMeaning">Please wait...</div>
+        <div class="short-meaning" id="shortMeaning">GitHub上の vocab.csv を読み込んでいます。</div>
       </div>
 
       <div class="detail-list">
@@ -458,25 +458,16 @@
         </div>
       </div>
 
-      <div class="notice" id="noticeText">CSVデータを読み込みます。最初だけStartを押すと自動再生できます。</div>
+      <div class="notice" id="noticeText">GitHub上の vocab.csv をデータとして読み込みます。</div>
     </section>
   </main>
 
   <script>
     /*
-      Data source
-      1. 一番簡単: index.html と同じ場所に vocab.csv を置く
-         const DATA_SOURCE_URL = "./vocab.csv";
-
-      2. Googleスプレッドシートを公開CSVとして使う場合:
-         const DATA_SOURCE_URL = "https://docs.google.com/spreadsheets/d/e/公開ID/pub?output=csv";
+      GitHubに置いたCSVを読み込む設定です。
+      index.html と vocab.csv を同じフォルダに置く場合は、このままでOKです。
     */
     const DATA_SOURCE_URL = "./vocab.csv";
-
-    const FALLBACK_CSV = `word,part_of_speech,pronunciation,meaning_ja,short_meaning_en,collocation,nuance_ja,example_en,example_ja
-pensioner,noun,/ˈpenʃənər/,年金生活者・年金受給者,an old person who receives a pension,elderly pensioners / retired pensioners / support pensioners,主にイギリス英語で、高齢で年金を受け取っている人を指す。,Many pensioners struggle to pay for housing and medical care.,多くの年金生活者は、住居費や医療費を支払うのに苦労している。
-mitigate,verb,/ˈmɪtɪɡeɪt/,軽減する・和らげる,to make a problem less serious,mitigate climate change / mitigate risks / mitigate negative effects,問題・影響・リスクを完全に消すのではなく、深刻さを小さくする時に使う。,Governments should invest in public transport to mitigate air pollution.,政府は大気汚染を軽減するために公共交通に投資すべきだ。
-equitable,adjective,/ˈekwɪtəbl/,公平な・公正な,fair and reasonable,equitable access / equitable society / equitable distribution,equalが「同じ」に近いのに対して、equitableは状況に応じて公平になるよう配慮するニュアンスがある。,All children should have equitable access to quality education.,すべての子どもは質の高い教育を公平に受けられるべきだ。`;
 
     let cards = [];
     let currentIndex = 0;
@@ -563,7 +554,7 @@ equitable,adjective,/ˈekwɪtəbl/,公平な・公正な,fair and reasonable,equ
       if (nonEmptyRows.length < 2) return [];
 
       const headers = nonEmptyRows[0].map(function (header) {
-        return normalizeValue(header);
+        return normalizeValue(header).replace(/^\uFEFF/, "");
       });
 
       return nonEmptyRows.slice(1).map(function (r) {
@@ -573,7 +564,7 @@ equitable,adjective,/ˈekwɪtəbl/,公平な・公正な,fair and reasonable,equ
         });
         return item;
       }).filter(function (item) {
-        return item.word || item.example_en || item.meaning_ja;
+        return item.word || item["単語"] || item.example_en || item["例文_英語"] || item.meaning_ja || item["意味"];
       });
     }
 
@@ -606,15 +597,14 @@ equitable,adjective,/ˈekwɪtəbl/,公平な・公正な,fair and reasonable,equ
 
         if (!cards.length) throw new Error("No valid cards found.");
 
-        setNotice("CSVデータを読み込みました。Startで自動再生できます。");
+        currentIndex = 0;
+        renderCard();
+        setNotice(`${cards.length}枚のカードを vocab.csv から読み込みました。Startで自動再生できます。`);
       } catch (error) {
-        const rows = parseCSV(FALLBACK_CSV);
-        cards = convertRowsToCards(rows);
-        setNotice("vocab.csv が見つからないため、サンプルデータを表示しています。");
+        cards = [];
+        renderNoData();
+        setNotice("vocab.csv を読み込めませんでした。GitHubに vocab.csv があるか、CSVの見出しが正しいか確認してください。");
       }
-
-      currentIndex = 0;
-      renderCard();
     }
 
     function getCurrentCard() {
@@ -626,14 +616,27 @@ equitable,adjective,/ˈekwɪtəbl/,公平な・公正な,fair and reasonable,equ
       block.classList.toggle("hidden", !value);
     }
 
+    function renderNoData() {
+      elements.progressText.textContent = "0 / 0";
+      elements.wordText.textContent = "No data";
+      elements.partOfSpeech.textContent = "---";
+      elements.pronunciation.textContent = "---";
+      elements.meaningMain.textContent = "CSVデータがありません";
+      elements.shortMeaning.textContent = "index.html と同じ場所に vocab.csv を置いてください。";
+      elements.collocationText.textContent = "";
+      elements.nuanceText.textContent = "";
+      elements.exampleText.textContent = "";
+      elements.exampleJa.textContent = "";
+      toggleBlock(elements.collocationBlock, false);
+      toggleBlock(elements.nuanceBlock, false);
+      toggleBlock(elements.exampleBlock, false);
+    }
+
     function renderCard() {
       const card = getCurrentCard();
 
       if (!card) {
-        elements.progressText.textContent = "0 / 0";
-        elements.wordText.textContent = "No data";
-        elements.meaningMain.textContent = "データがありません";
-        elements.shortMeaning.textContent = "vocab.csvを確認してください。";
+        renderNoData();
         return;
       }
 
@@ -772,7 +775,7 @@ equitable,adjective,/ˈekwɪtəbl/,公平な・公正な,fair and reasonable,equ
       }
 
       if (!cards.length) {
-        setNotice("カードデータがありません。");
+        setNotice("カードデータがありません。vocab.csvを確認してください。");
         return;
       }
 
