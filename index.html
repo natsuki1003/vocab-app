@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vocabulary Card Player</title>
+  <title>Vocabulary Deck Player</title>
 
   <style>
     :root {
@@ -66,13 +66,79 @@
       white-space: nowrap;
     }
 
-    .card {
+    .card,
+    .deck-menu,
+    .controls {
       width: 100%;
-      padding: 34px;
       border-radius: 28px;
       background: var(--card);
       border: 1px solid var(--border);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    }
+
+    .card {
+      padding: 34px;
+    }
+
+    .deck-menu {
+      padding: 28px;
+    }
+
+    .menu-title {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .menu-subtitle {
+      color: var(--subtext);
+      font-size: 17px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .deck-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .deck-button {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid var(--border-soft);
+      background: var(--panel-soft);
+      color: var(--text);
+      text-align: left;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .deck-button:hover {
+      background: rgba(255, 255, 255, 0.075);
+      transform: translateY(-1px);
+    }
+
+    .deck-button:active {
+      opacity: 0.75;
+      transform: translateY(0);
+    }
+
+    .deck-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .deck-description {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--subtext);
     }
 
     .word-row {
@@ -179,7 +245,7 @@
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
     .info-label {
@@ -235,9 +301,6 @@
     .controls {
       margin-top: 16px;
       padding: 16px;
-      border-radius: 24px;
-      background: var(--card);
-      border: 1px solid var(--border);
       display: grid;
       gap: 12px;
     }
@@ -335,9 +398,14 @@
         align-items: flex-start;
       }
 
-      .card {
+      .card,
+      .deck-menu {
         padding: 24px;
         border-radius: 26px;
+      }
+
+      .menu-title {
+        font-size: 29px;
       }
 
       .word {
@@ -386,11 +454,19 @@
 <body>
   <main class="app">
     <div class="top-bar">
-      <div id="progressText">Loading...</div>
+      <div id="progressText">Decks</div>
       <div class="status-pill" id="statusText">Ready</div>
     </div>
 
-    <section class="card" aria-live="polite">
+    <section class="deck-menu" id="deckMenu">
+      <div class="menu-title">Vocabulary Decks</div>
+      <div class="menu-subtitle">
+        Choose a deck and start learning. Deck data is loaded from CSV files on GitHub.
+      </div>
+      <div class="deck-list" id="deckList"></div>
+    </section>
+
+    <section class="card hidden" id="studyCard" aria-live="polite">
       <div class="word-row">
         <div class="word" id="wordText">Loading</div>
         <button class="icon-button" id="speakWordBtn" type="button" aria-label="Play word audio">
@@ -406,7 +482,7 @@
 
       <div class="meaning-block">
         <div class="meaning-main" id="meaningMain">読み込み中</div>
-        <div class="short-meaning" id="shortMeaning">GitHub上の vocab.csv を読み込んでいます。</div>
+        <div class="short-meaning" id="shortMeaning">CSVを読み込んでいます。</div>
       </div>
 
       <div class="detail-list">
@@ -443,8 +519,9 @@
       </div>
     </section>
 
-    <section class="controls">
+    <section class="controls hidden" id="controls">
       <div class="button-row">
+        <button class="action-btn" id="backToDecksBtn" type="button">Decks</button>
         <button class="action-btn" id="prevBtn" type="button">Prev</button>
         <button class="action-btn primary" id="autoPlayBtn" type="button">Start</button>
         <button class="action-btn" id="nextBtn" type="button">Next</button>
@@ -469,17 +546,15 @@
         </div>
       </div>
 
-      <div class="notice" id="noticeText">GitHub上の vocab.csv をデータとして読み込みます。</div>
+      <div class="notice" id="noticeText">Choose a deck to start.</div>
     </section>
   </main>
 
   <script>
-    /*
-      GitHubに置いたCSVを読み込む設定です。
-      index.html と vocab.csv を同じフォルダに置く場合は、このままでOKです。
-    */
-    const DATA_SOURCE_URL = "./vocab.csv";
+    const DECKS_SOURCE_URL = "./decks.json";
 
+    let decks = [];
+    let activeDeck = null;
     let cards = [];
     let currentIndex = 0;
     let voices = [];
@@ -489,8 +564,12 @@
     const elements = {
       progressText: document.getElementById("progressText"),
       statusText: document.getElementById("statusText"),
-      wordText: document.getElementById("wordText"),
+      deckMenu: document.getElementById("deckMenu"),
+      deckList: document.getElementById("deckList"),
+      studyCard: document.getElementById("studyCard"),
+      controls: document.getElementById("controls"),
       cardNumber: document.getElementById("cardNumber"),
+      wordText: document.getElementById("wordText"),
       partOfSpeech: document.getElementById("partOfSpeech"),
       pronunciation: document.getElementById("pronunciation"),
       meaningMain: document.getElementById("meaningMain"),
@@ -508,6 +587,7 @@
       memoText: document.getElementById("memoText"),
       speakWordBtn: document.getElementById("speakWordBtn"),
       speakExampleBtn: document.getElementById("speakExampleBtn"),
+      backToDecksBtn: document.getElementById("backToDecksBtn"),
       prevBtn: document.getElementById("prevBtn"),
       nextBtn: document.getElementById("nextBtn"),
       autoPlayBtn: document.getElementById("autoPlayBtn"),
@@ -525,6 +605,11 @@
 
     function normalizeValue(value) {
       return value == null ? "" : String(value).trim();
+    }
+
+    function withCacheBust(url) {
+      const separator = url.includes("?") ? "&" : "?";
+      return `${url}${separator}v=${Date.now()}`;
     }
 
     function parseCSV(text) {
@@ -593,8 +678,8 @@
           pronunciation: row.pronunciation || row["発音記号"] || "",
           meaning: row.meaning_ja || row["意味"] || "",
           shortMeaning: row.short_meaning_en || row["短い意味"] || "",
-          collocation: row.collocation || row["コロケーション"] || "",
           nuance: row.nuance_ja || row["ニュアンス解説"] || "",
+          collocation: row.collocation || row["コロケーション"] || "",
           example: row.example_en || row["例文_英語"] || "",
           exampleJa: row.example_ja || row["例文_日本語"] || "",
           paraphrase: row.paraphrase || row["言い換え"] || "",
@@ -605,9 +690,72 @@
       });
     }
 
-    async function loadCards() {
+    async function loadDecks() {
       try {
-        const response = await fetch(DATA_SOURCE_URL, { cache: "no-store" });
+        const response = await fetch(withCacheBust(DECKS_SOURCE_URL), { cache: "no-store" });
+        if (!response.ok) throw new Error("decks.json could not be loaded.");
+        decks = await response.json();
+
+        if (!Array.isArray(decks) || decks.length === 0) {
+          throw new Error("No decks found.");
+        }
+
+        renderDeckMenu();
+      } catch (error) {
+        elements.deckList.innerHTML = "";
+        const message = document.createElement("div");
+        message.className = "deck-description";
+        message.textContent = "decks.json を読み込めませんでした。GitHubに decks.json があるか確認してください。";
+        elements.deckList.appendChild(message);
+      }
+    }
+
+    function renderDeckMenu() {
+      stopAutoPlay();
+      elements.deckMenu.classList.remove("hidden");
+      elements.studyCard.classList.add("hidden");
+      elements.controls.classList.add("hidden");
+      elements.progressText.textContent = "Decks";
+      elements.statusText.textContent = "Ready";
+
+      elements.deckList.innerHTML = "";
+
+      decks.forEach(function (deck) {
+        const button = document.createElement("button");
+        button.className = "deck-button";
+        button.type = "button";
+
+        const title = document.createElement("div");
+        title.className = "deck-title";
+        title.textContent = deck.title || "Untitled Deck";
+
+        const description = document.createElement("div");
+        description.className = "deck-description";
+        description.textContent = deck.description || deck.file || "";
+
+        button.appendChild(title);
+        button.appendChild(description);
+
+        button.addEventListener("click", function () {
+          loadCardsFromDeck(deck);
+        });
+
+        elements.deckList.appendChild(button);
+      });
+    }
+
+    async function loadCardsFromDeck(deck) {
+      stopAutoPlay();
+      activeDeck = deck;
+      elements.statusText.textContent = "Loading";
+      elements.deckMenu.classList.add("hidden");
+      elements.studyCard.classList.remove("hidden");
+      elements.controls.classList.remove("hidden");
+      elements.progressText.textContent = "Loading...";
+      setNotice(`${deck.title} を読み込んでいます。`);
+
+      try {
+        const response = await fetch(withCacheBust(deck.file), { cache: "no-store" });
         if (!response.ok) throw new Error("CSV file could not be loaded.");
 
         const csvText = await response.text();
@@ -618,11 +766,13 @@
 
         currentIndex = 0;
         renderCard();
-        setNotice(`${cards.length}枚のカードを vocab.csv から読み込みました。Startで自動再生できます。`);
+        elements.statusText.textContent = "Ready";
+        setNotice(`${cards.length}枚のカードを読み込みました。Startで自動再生できます。`);
       } catch (error) {
         cards = [];
         renderNoData();
-        setNotice("vocab.csv を読み込めませんでした。GitHubに vocab.csv があるか、CSVの見出しが正しいか確認してください。");
+        elements.statusText.textContent = "Ready";
+        setNotice("CSVを読み込めませんでした。ファイル名・パス・CSVヘッダーを確認してください。");
       }
     }
 
@@ -642,7 +792,7 @@
       elements.partOfSpeech.textContent = "---";
       elements.pronunciation.textContent = "---";
       elements.meaningMain.textContent = "CSVデータがありません";
-      elements.shortMeaning.textContent = "index.html と同じ場所に vocab.csv を置いてください。";
+      elements.shortMeaning.textContent = "CSVの場所とヘッダーを確認してください。";
       elements.collocationText.textContent = "";
       elements.nuanceText.textContent = "";
       elements.exampleText.textContent = "";
@@ -664,7 +814,7 @@
         return;
       }
 
-      elements.progressText.textContent = `${currentIndex + 1} / ${cards.length}`;
+      elements.progressText.textContent = activeDeck ? `${activeDeck.title} · ${currentIndex + 1} / ${cards.length}` : `${currentIndex + 1} / ${cards.length}`;
       elements.wordText.textContent = card.word;
       elements.cardNumber.textContent = card.number ? `No. ${card.number}` : "No. --";
       elements.partOfSpeech.textContent = card.partOfSpeech || "---";
@@ -804,7 +954,7 @@
       }
 
       if (!cards.length) {
-        setNotice("カードデータがありません。vocab.csvを確認してください。");
+        setNotice("カードデータがありません。CSVを確認してください。");
         return;
       }
 
@@ -887,6 +1037,7 @@
       });
     });
 
+    elements.backToDecksBtn.addEventListener("click", renderDeckMenu);
     elements.prevBtn.addEventListener("click", goToPreviousCard);
     elements.nextBtn.addEventListener("click", goToNextCard);
     elements.autoPlayBtn.addEventListener("click", startAutoPlay);
@@ -908,10 +1059,9 @@
       window.speechSynthesis.onvoiceschanged = loadVoices;
     } else {
       elements.voiceSelect.innerHTML = '<option value="">Not supported</option>';
-      setNotice("このブラウザは音声読み上げに対応していません。");
     }
 
-    loadCards();
+    loadDecks();
   </script>
 </body>
 </html>

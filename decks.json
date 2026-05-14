@@ -1,0 +1,17 @@
+[
+  {
+    "title": "IELTS Task 1 Map",
+    "description": "地図問題で使いやすい変化・拡張・移動の表現",
+    "file": "./decks/ielts-task1-map.csv"
+  },
+  {
+    "title": "IELTS Task 2 Academic",
+    "description": "Task 2で使いやすいアカデミック語彙",
+    "file": "./decks/ielts-task2-academic.csv"
+  },
+  {
+    "title": "Daily Conversation",
+    "description": "日常会話・Speakingで使いやすい基本語彙",
+    "file": "./decks/daily-conversation.csv"
+  }
+]
