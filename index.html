@@ -399,6 +399,7 @@
       </div>
 
       <div class="meta-row">
+        <span class="chip" id="cardNumber">No. --</span>
         <span class="chip" id="partOfSpeech">---</span>
         <span class="chip" id="pronunciation">---</span>
       </div>
@@ -428,6 +429,16 @@
             </button>
           </div>
           <div class="example-ja" id="exampleJa"></div>
+        </section>
+
+        <section class="detail-block" id="paraphraseBlock">
+          <div class="info-label">Paraphrase</div>
+          <div class="info-content" id="paraphraseText"></div>
+        </section>
+
+        <section class="detail-block" id="memoBlock">
+          <div class="info-label">Memo</div>
+          <div class="info-content" id="memoText"></div>
         </section>
       </div>
     </section>
@@ -479,6 +490,7 @@
       progressText: document.getElementById("progressText"),
       statusText: document.getElementById("statusText"),
       wordText: document.getElementById("wordText"),
+      cardNumber: document.getElementById("cardNumber"),
       partOfSpeech: document.getElementById("partOfSpeech"),
       pronunciation: document.getElementById("pronunciation"),
       meaningMain: document.getElementById("meaningMain"),
@@ -486,10 +498,14 @@
       collocationBlock: document.getElementById("collocationBlock"),
       nuanceBlock: document.getElementById("nuanceBlock"),
       exampleBlock: document.getElementById("exampleBlock"),
+      paraphraseBlock: document.getElementById("paraphraseBlock"),
+      memoBlock: document.getElementById("memoBlock"),
       collocationText: document.getElementById("collocationText"),
       nuanceText: document.getElementById("nuanceText"),
       exampleText: document.getElementById("exampleText"),
       exampleJa: document.getElementById("exampleJa"),
+      paraphraseText: document.getElementById("paraphraseText"),
+      memoText: document.getElementById("memoText"),
       speakWordBtn: document.getElementById("speakWordBtn"),
       speakExampleBtn: document.getElementById("speakExampleBtn"),
       prevBtn: document.getElementById("prevBtn"),
@@ -571,6 +587,7 @@
     function convertRowsToCards(rows) {
       return rows.map(function (row) {
         return {
+          number: row.number || row.no || row.id || row["番号"] || "",
           word: row.word || row["単語"] || "",
           partOfSpeech: row.part_of_speech || row["品詞"] || "",
           pronunciation: row.pronunciation || row["発音記号"] || "",
@@ -579,7 +596,9 @@
           collocation: row.collocation || row["コロケーション"] || "",
           nuance: row.nuance_ja || row["ニュアンス解説"] || "",
           example: row.example_en || row["例文_英語"] || "",
-          exampleJa: row.example_ja || row["例文_日本語"] || ""
+          exampleJa: row.example_ja || row["例文_日本語"] || "",
+          paraphrase: row.paraphrase || row["言い換え"] || "",
+          memo: row.memo || row["メモ"] || ""
         };
       }).filter(function (card) {
         return card.word;
@@ -619,6 +638,7 @@
     function renderNoData() {
       elements.progressText.textContent = "0 / 0";
       elements.wordText.textContent = "No data";
+      elements.cardNumber.textContent = "No. --";
       elements.partOfSpeech.textContent = "---";
       elements.pronunciation.textContent = "---";
       elements.meaningMain.textContent = "CSVデータがありません";
@@ -627,9 +647,13 @@
       elements.nuanceText.textContent = "";
       elements.exampleText.textContent = "";
       elements.exampleJa.textContent = "";
+      elements.paraphraseText.textContent = "";
+      elements.memoText.textContent = "";
       toggleBlock(elements.collocationBlock, false);
       toggleBlock(elements.nuanceBlock, false);
       toggleBlock(elements.exampleBlock, false);
+      toggleBlock(elements.paraphraseBlock, false);
+      toggleBlock(elements.memoBlock, false);
     }
 
     function renderCard() {
@@ -642,6 +666,7 @@
 
       elements.progressText.textContent = `${currentIndex + 1} / ${cards.length}`;
       elements.wordText.textContent = card.word;
+      elements.cardNumber.textContent = card.number ? `No. ${card.number}` : "No. --";
       elements.partOfSpeech.textContent = card.partOfSpeech || "---";
       elements.pronunciation.textContent = card.pronunciation || "---";
       elements.meaningMain.textContent = card.meaning || "---";
@@ -650,10 +675,14 @@
       elements.nuanceText.textContent = card.nuance || "";
       elements.exampleText.textContent = card.example || "";
       elements.exampleJa.textContent = card.exampleJa || "";
+      elements.paraphraseText.textContent = card.paraphrase || "";
+      elements.memoText.textContent = card.memo || "";
 
       toggleBlock(elements.collocationBlock, card.collocation);
       toggleBlock(elements.nuanceBlock, card.nuance);
       toggleBlock(elements.exampleBlock, card.example || card.exampleJa);
+      toggleBlock(elements.paraphraseBlock, card.paraphrase);
+      toggleBlock(elements.memoBlock, card.memo);
     }
 
     function loadVoices() {
