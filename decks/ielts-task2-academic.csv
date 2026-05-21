@@ -1,4 +1,3 @@
-﻿番号,単語,品詞,発音記号,意味,短い意味,ニュアンス解説,コロケーション,例文_英語,例文_日本語,言い換え,メモ
+﻿no,word,pos,ipa,meaning_ja,short_definition,usage_note,collocations,sentence,translation,synonyms,notes
 1,mitigate,verb,/ˈmɪtɪɡeɪt/,軽減する、和らげる,to make a problem less serious,問題を完全に消すのではなく、悪影響や深刻さを小さくする時に使う。,mitigate climate change / mitigate risks,Governments should invest in public transport to mitigate air pollution.,政府は大気汚染を軽減するために公共交通に投資すべきだ。,reduce; ease; alleviate,環境・犯罪・健康など多くのTask 2トピックで使える。
 2,equitable,adjective,/ˈekwɪtəbl/,公平な、公正な,fair and reasonable,equalは同じ扱い、equitableは状況に応じて公平になるよう配慮するニュアンス。,equitable access / equitable society,All children should have equitable access to quality education.,すべての子どもは質の高い教育を公平に受けられるべきだ。,fair; just,education / healthcare / social policy で便利。
-3,reliance,noun,/rɪˈlaɪəns/,依存、頼ること,the state of depending on something,特定のものに頼りすぎている状態を表す。Task 2ではnegativeに使いやすい。,reliance on cars / reliance on technology,Excessive reliance on private cars can worsen traffic congestion.,自家用車への過度な依存は交通渋滞を悪化させる可能性がある。,dependence,reliance on + 名詞 の形で使う。

@@ -1,17 +1,59 @@
 [
   {
+    "id": "ielts-task1-map",
     "title": "IELTS Task 1 Map",
-    "description": "地図問題で使いやすい変化・拡張・移動の表現",
-    "file": "./decks/ielts-task1-map.csv"
+    "description": "まず作り込むメイン単語帳。日本語ヘッダーのCSVで管理します。",
+    "file": "./decks/ielts-task1-map.csv",
+    "schemaName": "Japanese full header",
+    "schema": {
+      "number": "番号",
+      "word": "単語",
+      "partOfSpeech": "品詞",
+      "pronunciation": "発音記号",
+      "meaning": "意味",
+      "shortMeaning": "短い意味",
+      "nuance": "ニュアンス解説",
+      "collocation": "コロケーション",
+      "example": "例文_英語",
+      "exampleJa": "例文_日本語",
+      "paraphrase": "言い換え",
+      "memo": "メモ"
+    }
   },
   {
+    "id": "ielts-task2-academic",
     "title": "IELTS Task 2 Academic",
-    "description": "Task 2で使いやすいアカデミック語彙",
-    "file": "./decks/ielts-task2-academic.csv"
+    "description": "将来用の仮デッキ。英語ヘッダーのCSV例です。",
+    "file": "./decks/ielts-task2-academic.csv",
+    "schemaName": "English header",
+    "schema": {
+      "number": "no",
+      "word": "word",
+      "partOfSpeech": "pos",
+      "pronunciation": "ipa",
+      "meaning": "meaning_ja",
+      "shortMeaning": "short_definition",
+      "nuance": "usage_note",
+      "collocation": "collocations",
+      "example": "sentence",
+      "exampleJa": "translation",
+      "paraphrase": "synonyms",
+      "memo": "notes"
+    }
   },
   {
+    "id": "daily-conversation",
     "title": "Daily Conversation",
-    "description": "日常会話・Speakingで使いやすい基本語彙",
-    "file": "./decks/daily-conversation.csv"
+    "description": "将来用の仮デッキ。最小限ヘッダーのCSV例です。",
+    "file": "./decks/daily-conversation.csv",
+    "schemaName": "Minimal header",
+    "schema": {
+      "number": "id",
+      "word": "term",
+      "meaning": "meaning",
+      "example": "example",
+      "exampleJa": "ja_note",
+      "memo": "comment"
+    }
   }
 ]

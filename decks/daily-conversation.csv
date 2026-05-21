@@ -1,4 +1,3 @@
-﻿番号,単語,品詞,発音記号,意味,短い意味,ニュアンス解説,コロケーション,例文_英語,例文_日本語,言い換え,メモ
-1,refresh,verb,/rɪˈfreʃ/,気分をすっきりさせる、元気を取り戻す,to make someone feel less tired,疲れた後に気分や体をリセットする時に使う。,refresh my mind / feel refreshed,"After work, I take a shower to refresh my mind.",仕事の後、気分をすっきりさせるためにシャワーを浴びる。,relax; recover,Speakingで自分のルーティンを話す時に便利。
-2,spacious,adjective,/ˈspeɪʃəs/,広々とした,having a lot of space,部屋・家・場所が広くて快適な時に使う。bigより自然で上品。,a spacious apartment / a spacious room,I would like to live in a more spacious apartment in the future.,将来はもっと広々としたアパートに住みたい。,large; roomy,housingのSpeakingで使いやすい。
-3,convenient,adjective,/kənˈviːniənt/,便利な,easy and useful,生活・交通・場所についてよく使う。,convenient location / convenient public transport,Living near a station is very convenient for commuting.,駅の近くに住むことは通勤にとても便利だ。,practical; useful,IELTS Speaking Part 1で頻出。
+﻿id,term,meaning,example,ja_note,comment
+1,refresh,気分をすっきりさせる,"After work, I take a shower to refresh my mind.",仕事の後、気分をすっきりさせるためにシャワーを浴びる。,Speakingで自分のルーティンを話す時に便利。
+2,spacious,広々とした,I would like to live in a more spacious apartment in the future.,将来はもっと広々としたアパートに住みたい。,housingのSpeakingで使いやすい。
