@@ -19,6 +19,7 @@
       --button: #1c1c1e;
       --button-hover: #2c2c2e;
       --accent: #f5f5f7;
+      --danger: #ff9f0a;
     }
 
     * {
@@ -305,6 +306,24 @@
       border-left-width: 15px;
     }
 
+    .done-card {
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .done-title {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      margin-bottom: 12px;
+    }
+
+    .done-text {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--subtext);
+    }
+
     .controls {
       margin-top: 16px;
       padding: 16px;
@@ -320,7 +339,14 @@
       flex-wrap: wrap;
     }
 
-    .action-btn {
+    .review-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .action-btn,
+    .review-btn {
       appearance: none;
       -webkit-appearance: none;
       min-width: 118px;
@@ -338,15 +364,25 @@
       transition: opacity 0.15s ease, background 0.15s ease;
     }
 
-    .action-btn:hover {
+    .review-btn {
+      min-width: 0;
+      width: 100%;
+      padding: 0 10px;
+      font-size: 14px;
+    }
+
+    .action-btn:hover,
+    .review-btn:hover {
       background: var(--button-hover);
     }
 
-    .action-btn:active {
+    .action-btn:active,
+    .review-btn:active {
       opacity: 0.75;
     }
 
-    .action-btn.primary {
+    .action-btn.primary,
+    .review-btn.primary {
       color: #1c1c1e;
       background: var(--accent);
     }
@@ -397,6 +433,12 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    @media screen and (max-width: 560px) {
+      .review-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media screen and (max-width: 480px) {
@@ -468,61 +510,71 @@
     <section class="deck-menu" id="deckMenu">
       <div class="menu-title">Vocabulary Decks</div>
       <div class="menu-subtitle">
-        Choose a deck and start learning. Each deck can use its own CSV header format.
+        Choose a deck and start learning. Review results are saved in this browser.
       </div>
       <div class="deck-list" id="deckList"></div>
     </section>
 
     <section class="card hidden" id="studyCard" aria-live="polite">
-      <div class="word-row">
-        <div class="word" id="wordText">Loading</div>
-        <button class="icon-button" id="speakWordBtn" type="button" aria-label="Play word audio">
-          <span class="play-icon" aria-hidden="true"></span>
-        </button>
+      <div id="cardContent">
+        <div class="word-row">
+          <div class="word" id="wordText">Loading</div>
+          <button class="icon-button" id="speakWordBtn" type="button" aria-label="Play word audio">
+            <span class="play-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <div class="meta-row">
+          <span class="chip" id="cardNumber">No. --</span>
+          <span class="chip" id="partOfSpeech">---</span>
+          <span class="chip" id="pronunciation">---</span>
+          <span class="chip" id="reviewStatus">New</span>
+        </div>
+
+        <div class="meaning-block">
+          <div class="meaning-main" id="meaningMain">読み込み中</div>
+          <div class="short-meaning" id="shortMeaning">CSVを読み込んでいます。</div>
+        </div>
+
+        <div class="detail-list">
+          <section class="detail-block" id="collocationBlock">
+            <div class="info-label">Collocation</div>
+            <div class="info-content" id="collocationText"></div>
+          </section>
+
+          <section class="detail-block" id="nuanceBlock">
+            <div class="info-label">Nuance</div>
+            <div class="info-content" id="nuanceText"></div>
+          </section>
+
+          <section class="detail-block" id="exampleBlock">
+            <div class="info-label">Example</div>
+            <div class="example-line">
+              <div class="example-en" id="exampleText"></div>
+              <button class="icon-button small-audio" id="speakExampleBtn" type="button" aria-label="Play example audio">
+                <span class="play-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="example-ja" id="exampleJa"></div>
+          </section>
+
+          <section class="detail-block" id="paraphraseBlock">
+            <div class="info-label">Paraphrase</div>
+            <div class="info-content" id="paraphraseText"></div>
+          </section>
+
+          <section class="detail-block" id="memoBlock">
+            <div class="info-label">Memo</div>
+            <div class="info-content" id="memoText"></div>
+          </section>
+        </div>
       </div>
 
-      <div class="meta-row">
-        <span class="chip" id="cardNumber">No. --</span>
-        <span class="chip" id="partOfSpeech">---</span>
-        <span class="chip" id="pronunciation">---</span>
-      </div>
-
-      <div class="meaning-block">
-        <div class="meaning-main" id="meaningMain">読み込み中</div>
-        <div class="short-meaning" id="shortMeaning">CSVを読み込んでいます。</div>
-      </div>
-
-      <div class="detail-list">
-        <section class="detail-block" id="collocationBlock">
-          <div class="info-label">Collocation</div>
-          <div class="info-content" id="collocationText"></div>
-        </section>
-
-        <section class="detail-block" id="nuanceBlock">
-          <div class="info-label">Nuance</div>
-          <div class="info-content" id="nuanceText"></div>
-        </section>
-
-        <section class="detail-block" id="exampleBlock">
-          <div class="info-label">Example</div>
-          <div class="example-line">
-            <div class="example-en" id="exampleText"></div>
-            <button class="icon-button small-audio" id="speakExampleBtn" type="button" aria-label="Play example audio">
-              <span class="play-icon" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div class="example-ja" id="exampleJa"></div>
-        </section>
-
-        <section class="detail-block" id="paraphraseBlock">
-          <div class="info-label">Paraphrase</div>
-          <div class="info-content" id="paraphraseText"></div>
-        </section>
-
-        <section class="detail-block" id="memoBlock">
-          <div class="info-label">Memo</div>
-          <div class="info-content" id="memoText"></div>
-        </section>
+      <div class="done-card hidden" id="doneCard">
+        <div class="done-title">今日の復習は完了です</div>
+        <div class="done-text" id="doneText">
+          今表示できるカードはありません。
+        </div>
       </div>
     </section>
 
@@ -530,13 +582,20 @@
       <div class="button-row">
         <button class="action-btn" id="backToDecksBtn" type="button">Decks</button>
         <button class="action-btn" id="prevBtn" type="button">Prev</button>
-        <button class="action-btn primary" id="autoPlayBtn" type="button">Start</button>
         <button class="action-btn" id="nextBtn" type="button">Next</button>
       </div>
 
       <div class="button-row">
+        <button class="action-btn primary" id="autoAudioBtn" type="button">Auto Audio: Off</button>
         <button class="action-btn" id="replayBtn" type="button">Replay</button>
         <button class="action-btn" id="copyBtn" type="button">Copy</button>
+      </div>
+
+      <div class="review-row" id="reviewButtons">
+        <button class="review-btn" data-rating="hard" type="button">難しい<br>5分後</button>
+        <button class="review-btn" data-rating="normal" type="button">普通<br>1日後</button>
+        <button class="review-btn" data-rating="easy" type="button">簡単<br>2日後</button>
+        <button class="review-btn primary" data-rating="veryEasy" type="button">すごく簡単<br>3日後</button>
       </div>
 
       <div class="setting-row">
@@ -559,6 +618,22 @@
 
   <script>
     const DECKS_SOURCE_URL = "./decks.json";
+    const REVIEW_STORAGE_KEY = "vocab-app-review-state-v1";
+    const AUDIO_STORAGE_KEY = "vocab-app-auto-audio-v1";
+
+    const REVIEW_INTERVALS = {
+      hard: 5 * 60 * 1000,
+      normal: 24 * 60 * 60 * 1000,
+      easy: 2 * 24 * 60 * 60 * 1000,
+      veryEasy: 3 * 24 * 60 * 60 * 1000
+    };
+
+    const REVIEW_LABELS = {
+      hard: "難しい",
+      normal: "普通",
+      easy: "簡単",
+      veryEasy: "すごく簡単"
+    };
 
     const DEFAULT_ALIASES = {
       number: ["番号", "number", "no", "id"],
@@ -580,8 +655,9 @@
     let cards = [];
     let currentIndex = 0;
     let voices = [];
-    let isAutoPlaying = false;
-    let autoPlayToken = 0;
+    let isAutoAudioEnabled = localStorage.getItem(AUDIO_STORAGE_KEY) === "true";
+    let audioToken = 0;
+    let reviewState = loadReviewState();
 
     const elements = {
       progressText: document.getElementById("progressText"),
@@ -590,7 +666,11 @@
       deckList: document.getElementById("deckList"),
       studyCard: document.getElementById("studyCard"),
       controls: document.getElementById("controls"),
+      cardContent: document.getElementById("cardContent"),
+      doneCard: document.getElementById("doneCard"),
+      doneText: document.getElementById("doneText"),
       cardNumber: document.getElementById("cardNumber"),
+      reviewStatus: document.getElementById("reviewStatus"),
       wordText: document.getElementById("wordText"),
       partOfSpeech: document.getElementById("partOfSpeech"),
       pronunciation: document.getElementById("pronunciation"),
@@ -612,9 +692,10 @@
       backToDecksBtn: document.getElementById("backToDecksBtn"),
       prevBtn: document.getElementById("prevBtn"),
       nextBtn: document.getElementById("nextBtn"),
-      autoPlayBtn: document.getElementById("autoPlayBtn"),
+      autoAudioBtn: document.getElementById("autoAudioBtn"),
       replayBtn: document.getElementById("replayBtn"),
       copyBtn: document.getElementById("copyBtn"),
+      reviewButtons: document.getElementById("reviewButtons"),
       voiceSelect: document.getElementById("voiceSelect"),
       rateSlider: document.getElementById("rateSlider"),
       rateValue: document.getElementById("rateValue"),
@@ -632,6 +713,19 @@
     function withCacheBust(url) {
       const separator = url.includes("?") ? "&" : "?";
       return `${url}${separator}v=${Date.now()}`;
+    }
+
+    function loadReviewState() {
+      try {
+        const saved = localStorage.getItem(REVIEW_STORAGE_KEY);
+        return saved ? JSON.parse(saved) : {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveReviewState() {
+      localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(reviewState));
     }
 
     function parseCSV(text) {
@@ -713,11 +807,17 @@
       return "";
     }
 
+    function makeCardId(deck, card) {
+      const deckId = deck && deck.id ? deck.id : "default";
+      const stablePart = card.number || card.word;
+      return `${deckId}::${stablePart}`;
+    }
+
     function convertRowsToCards(rows, deck) {
       const schema = deck && deck.schema ? deck.schema : {};
 
       return rows.map(function (row) {
-        return {
+        const card = {
           number: getValue(row, schema, "number"),
           word: getValue(row, schema, "word"),
           partOfSpeech: getValue(row, schema, "partOfSpeech"),
@@ -731,9 +831,79 @@
           paraphrase: getValue(row, schema, "paraphrase"),
           memo: getValue(row, schema, "memo")
         };
+
+        card.cardId = makeCardId(deck, card);
+        return card;
       }).filter(function (card) {
         return card.word;
       });
+    }
+
+    function getRecord(card) {
+      return reviewState[card.cardId] || null;
+    }
+
+    function isCardDue(card) {
+      const record = getRecord(card);
+      if (!record || !record.dueAt) return true;
+      return Number(record.dueAt) <= Date.now();
+    }
+
+    function getDueCards() {
+      return cards.filter(isCardDue);
+    }
+
+    function findNextDueIndex(startIndex) {
+      if (!cards.length) return -1;
+
+      for (let step = 1; step <= cards.length; step++) {
+        const index = (startIndex + step) % cards.length;
+        if (isCardDue(cards[index])) return index;
+      }
+
+      return -1;
+    }
+
+    function findFirstDueIndex() {
+      return cards.findIndex(isCardDue);
+    }
+
+    function getNextDueTimeText() {
+      let nextDueAt = null;
+
+      cards.forEach(function (card) {
+        const record = getRecord(card);
+        if (!record || !record.dueAt) {
+          nextDueAt = Date.now();
+          return;
+        }
+
+        const dueAt = Number(record.dueAt);
+        if (!nextDueAt || dueAt < nextDueAt) {
+          nextDueAt = dueAt;
+        }
+      });
+
+      if (!nextDueAt) return "次の復習予定はありません。";
+
+      const date = new Date(nextDueAt);
+      return `次の復習予定: ${date.toLocaleString()}`;
+    }
+
+    function showDoneCard() {
+      cancelAudio();
+      elements.cardContent.classList.add("hidden");
+      elements.doneCard.classList.remove("hidden");
+      elements.reviewButtons.classList.add("hidden");
+      elements.progressText.textContent = activeDeck ? `${activeDeck.title} · Done` : "Done";
+      elements.doneText.textContent = getNextDueTimeText();
+      setNotice("今日表示できるカードはありません。復習予定日以降にまた開いてください。");
+    }
+
+    function showStudyContent() {
+      elements.cardContent.classList.remove("hidden");
+      elements.doneCard.classList.add("hidden");
+      elements.reviewButtons.classList.remove("hidden");
     }
 
     async function loadDecks() {
@@ -757,7 +927,7 @@
     }
 
     function renderDeckMenu() {
-      stopAutoPlay();
+      cancelAudio();
       elements.deckMenu.classList.remove("hidden");
       elements.studyCard.classList.add("hidden");
       elements.controls.classList.add("hidden");
@@ -796,7 +966,7 @@
     }
 
     async function loadCardsFromDeck(deck) {
-      stopAutoPlay();
+      cancelAudio();
       activeDeck = deck;
       elements.statusText.textContent = "Loading";
       elements.deckMenu.classList.add("hidden");
@@ -815,10 +985,17 @@
 
         if (!cards.length) throw new Error("No valid cards found.");
 
-        currentIndex = 0;
+        const firstDueIndex = findFirstDueIndex();
+        if (firstDueIndex === -1) {
+          showDoneCard();
+          elements.statusText.textContent = "Ready";
+          return;
+        }
+
+        currentIndex = firstDueIndex;
         renderCard();
         elements.statusText.textContent = "Ready";
-        setNotice(`${cards.length}枚のカードを読み込みました。Startで自動再生できます。`);
+        setNotice(`${cards.length}枚中、今すぐ学習できるカードは${getDueCards().length}枚です。`);
       } catch (error) {
         cards = [];
         renderNoData();
@@ -837,11 +1014,13 @@
     }
 
     function renderNoData() {
+      showStudyContent();
       elements.progressText.textContent = "0 / 0";
       elements.wordText.textContent = "No data";
       elements.cardNumber.textContent = "No. --";
       elements.partOfSpeech.textContent = "---";
       elements.pronunciation.textContent = "---";
+      elements.reviewStatus.textContent = "No data";
       elements.meaningMain.textContent = "CSVデータがありません";
       elements.shortMeaning.textContent = "CSVの場所・ヘッダー・schema設定を確認してください。";
       elements.collocationText.textContent = "";
@@ -865,11 +1044,20 @@
         return;
       }
 
-      elements.progressText.textContent = activeDeck ? `${activeDeck.title} · ${currentIndex + 1} / ${cards.length}` : `${currentIndex + 1} / ${cards.length}`;
+      showStudyContent();
+
+      const record = getRecord(card);
+      const dueCards = getDueCards();
+
+      elements.progressText.textContent = activeDeck
+        ? `${activeDeck.title} · ${currentIndex + 1} / ${cards.length}`
+        : `${currentIndex + 1} / ${cards.length}`;
+
       elements.wordText.textContent = card.word;
       elements.cardNumber.textContent = card.number ? `No. ${card.number}` : "No. --";
       elements.partOfSpeech.textContent = card.partOfSpeech || "---";
       elements.pronunciation.textContent = card.pronunciation || "---";
+      elements.reviewStatus.textContent = record ? `Review ${record.reviews || 0}` : "New";
       elements.meaningMain.textContent = card.meaning || "---";
       elements.shortMeaning.textContent = card.shortMeaning || "";
       elements.collocationText.textContent = card.collocation || "";
@@ -884,6 +1072,12 @@
       toggleBlock(elements.exampleBlock, card.example || card.exampleJa);
       toggleBlock(elements.paraphraseBlock, card.paraphrase);
       toggleBlock(elements.memoBlock, card.memo);
+
+      setNotice(`今すぐ学習できるカード: ${dueCards.length}枚`);
+
+      if (isAutoAudioEnabled) {
+        playCurrentCardSequence();
+      }
     }
 
     function loadVoices() {
@@ -927,7 +1121,15 @@
       }) || null;
     }
 
-    function speak(text) {
+    function cancelAudio() {
+      audioToken++;
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      elements.statusText.textContent = "Ready";
+    }
+
+    function speak(text, token) {
       return new Promise(function (resolve, reject) {
         if (!text) {
           resolve();
@@ -954,16 +1156,16 @@
         }
 
         utterance.onstart = function () {
-          elements.statusText.textContent = "Speaking";
+          if (token === audioToken) elements.statusText.textContent = "Speaking";
         };
 
         utterance.onend = function () {
-          elements.statusText.textContent = isAutoPlaying ? "Auto" : "Ready";
+          if (token === audioToken) elements.statusText.textContent = "Ready";
           resolve();
         };
 
         utterance.onerror = function (event) {
-          elements.statusText.textContent = "Ready";
+          if (token === audioToken) elements.statusText.textContent = "Ready";
           reject(event.error || new Error("Speech error."));
         };
 
@@ -977,78 +1179,99 @@
       });
     }
 
-    async function playCurrentCardSequence(token) {
+    async function playCurrentCardSequence() {
       const card = getCurrentCard();
       if (!card) return;
 
+      const token = ++audioToken;
+
       try {
-        await speak(card.word);
-        if (token !== autoPlayToken) return;
+        await speak(card.word, token);
+        if (token !== audioToken) return;
 
-        await wait(700);
-        if (token !== autoPlayToken) return;
+        await wait(650);
+        if (token !== audioToken) return;
 
-        await speak(card.example);
-        if (token !== autoPlayToken) return;
+        await speak(card.example, token);
+        if (token !== audioToken) return;
 
-        await wait(1200);
+        elements.statusText.textContent = "Ready";
       } catch (error) {
-        setNotice("音声を再生できませんでした。別のVoiceを選ぶか、もう一度Startを押してください。");
-        stopAutoPlay();
+        if (token === audioToken) {
+          setNotice("音声を再生できませんでした。別のVoiceを選ぶか、手動再生を試してください。");
+          elements.statusText.textContent = "Ready";
+        }
       }
     }
 
-    async function startAutoPlay() {
-      if (isAutoPlaying) {
-        stopAutoPlay();
-        return;
-      }
-
-      if (!cards.length) {
-        setNotice("カードデータがありません。CSVを確認してください。");
-        return;
-      }
-
-      isAutoPlaying = true;
-      autoPlayToken++;
-      const token = autoPlayToken;
-      elements.autoPlayBtn.textContent = "Stop";
-      elements.statusText.textContent = "Auto";
-      setNotice("Auto play: word → example → next card.");
-
-      while (isAutoPlaying && token === autoPlayToken) {
-        renderCard();
-        await playCurrentCardSequence(token);
-
-        if (!isAutoPlaying || token !== autoPlayToken) break;
-
-        currentIndex = (currentIndex + 1) % cards.length;
-        renderCard();
-      }
+    function updateAutoAudioButton() {
+      elements.autoAudioBtn.textContent = isAutoAudioEnabled ? "Auto Audio: On" : "Auto Audio: Off";
+      elements.autoAudioBtn.classList.toggle("primary", isAutoAudioEnabled);
     }
 
-    function stopAutoPlay() {
-      isAutoPlaying = false;
-      autoPlayToken++;
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
+    function toggleAutoAudio() {
+      isAutoAudioEnabled = !isAutoAudioEnabled;
+      localStorage.setItem(AUDIO_STORAGE_KEY, String(isAutoAudioEnabled));
+      updateAutoAudioButton();
+
+      if (isAutoAudioEnabled) {
+        setNotice("Auto AudioをONにしました。カード表示時に単語と例文を自動再生します。");
+        playCurrentCardSequence();
+      } else {
+        cancelAudio();
+        setNotice("Auto AudioをOFFにしました。再生ボタンを押した時だけ音声を再生します。");
       }
-      elements.autoPlayBtn.textContent = "Start";
-      elements.statusText.textContent = "Ready";
     }
 
     function goToPreviousCard() {
-      stopAutoPlay();
+      cancelAudio();
       if (!cards.length) return;
       currentIndex = (currentIndex - 1 + cards.length) % cards.length;
       renderCard();
     }
 
     function goToNextCard() {
-      stopAutoPlay();
+      cancelAudio();
       if (!cards.length) return;
       currentIndex = (currentIndex + 1) % cards.length;
       renderCard();
+    }
+
+    function goToNextDueCard() {
+      const nextIndex = findNextDueIndex(currentIndex);
+
+      if (nextIndex === -1) {
+        showDoneCard();
+        return;
+      }
+
+      currentIndex = nextIndex;
+      renderCard();
+    }
+
+    function reviewCurrentCard(rating) {
+      const card = getCurrentCard();
+      if (!card) return;
+
+      const now = Date.now();
+      const oldRecord = getRecord(card) || {};
+      const interval = REVIEW_INTERVALS[rating] || REVIEW_INTERVALS.normal;
+      const dueAt = now + interval;
+
+      reviewState[card.cardId] = {
+        dueAt: dueAt,
+        lastReviewedAt: now,
+        lastRating: rating,
+        reviews: (oldRecord.reviews || 0) + 1,
+        interval: interval
+      };
+
+      saveReviewState();
+
+      const dueText = new Date(dueAt).toLocaleString();
+      setNotice(`${card.word}: ${REVIEW_LABELS[rating]} と記録しました。次回予定: ${dueText}`);
+
+      goToNextDueCard();
     }
 
     function copyCurrentWord() {
@@ -1071,19 +1294,21 @@
     }
 
     elements.speakWordBtn.addEventListener("click", function () {
-      stopAutoPlay();
+      cancelAudio();
       const card = getCurrentCard();
       if (!card) return;
-      speak(card.word).catch(function () {
+      const token = ++audioToken;
+      speak(card.word, token).catch(function () {
         setNotice("音声を再生できませんでした。");
       });
     });
 
     elements.speakExampleBtn.addEventListener("click", function () {
-      stopAutoPlay();
+      cancelAudio();
       const card = getCurrentCard();
       if (!card) return;
-      speak(card.example).catch(function () {
+      const token = ++audioToken;
+      speak(card.example, token).catch(function () {
         setNotice("音声を再生できませんでした。");
       });
     });
@@ -1091,15 +1316,19 @@
     elements.backToDecksBtn.addEventListener("click", renderDeckMenu);
     elements.prevBtn.addEventListener("click", goToPreviousCard);
     elements.nextBtn.addEventListener("click", goToNextCard);
-    elements.autoPlayBtn.addEventListener("click", startAutoPlay);
+    elements.autoAudioBtn.addEventListener("click", toggleAutoAudio);
 
-    elements.replayBtn.addEventListener("click", async function () {
-      stopAutoPlay();
-      const token = ++autoPlayToken;
-      await playCurrentCardSequence(token);
+    elements.replayBtn.addEventListener("click", function () {
+      playCurrentCardSequence();
     });
 
     elements.copyBtn.addEventListener("click", copyCurrentWord);
+
+    elements.reviewButtons.addEventListener("click", function (event) {
+      const button = event.target.closest("button[data-rating]");
+      if (!button) return;
+      reviewCurrentCard(button.dataset.rating);
+    });
 
     elements.rateSlider.addEventListener("input", function () {
       elements.rateValue.textContent = elements.rateSlider.value;
@@ -1112,6 +1341,7 @@
       elements.voiceSelect.innerHTML = '<option value="">Not supported</option>';
     }
 
+    updateAutoAudioButton();
     loadDecks();
   </script>
 </body>
