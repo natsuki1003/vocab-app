@@ -54,6 +54,47 @@
       font-weight: 600;
     }
 
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .back-icon {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.15s ease, opacity 0.15s ease;
+      flex: 0 0 auto;
+    }
+
+    .back-icon:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .back-icon:active {
+      opacity: 0.75;
+    }
+
+    .progress-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .status-pill {
       display: inline-flex;
       align-items: center;
@@ -503,7 +544,10 @@
 <body>
   <main class="app">
     <div class="top-bar">
-      <div id="progressText">Decks</div>
+      <div class="top-left">
+        <button class="back-icon hidden" id="backToDecksBtn" type="button" aria-label="Back to decks">←</button>
+        <div class="progress-text" id="progressText">Decks</div>
+      </div>
       <div class="status-pill" id="statusText">Ready</div>
     </div>
 
@@ -579,37 +623,20 @@
     </section>
 
     <section class="controls hidden" id="controls">
-      <div class="button-row">
-        <button class="action-btn" id="backToDecksBtn" type="button">Decks</button>
-        <button class="action-btn" id="prevBtn" type="button">Prev</button>
-        <button class="action-btn" id="nextBtn" type="button">Next</button>
-      </div>
-
-      <div class="button-row">
-        <button class="action-btn primary" id="autoAudioBtn" type="button">Auto Audio: Off</button>
-        <button class="action-btn" id="replayBtn" type="button">Replay</button>
-        <button class="action-btn" id="copyBtn" type="button">Copy</button>
-      </div>
+      <button class="hidden" id="prevBtn" type="button"></button>
+      <button class="hidden" id="nextBtn" type="button"></button>
+      <button class="hidden" id="autoAudioBtn" type="button"></button>
+      <button class="hidden" id="replayBtn" type="button"></button>
+      <button class="hidden" id="copyBtn" type="button"></button>
+      <select class="hidden" id="voiceSelect"></select>
+      <input class="hidden" id="rateSlider" type="range" value="0.85" />
+      <span class="hidden" id="rateValue">0.85</span>
 
       <div class="review-row" id="reviewButtons">
         <button class="review-btn" data-rating="hard" type="button">難しい<br>5分後</button>
         <button class="review-btn" data-rating="normal" type="button">普通<br>1日後</button>
         <button class="review-btn" data-rating="easy" type="button">簡単<br>2日後</button>
         <button class="review-btn primary" data-rating="veryEasy" type="button">すごく簡単<br>3日後</button>
-      </div>
-
-      <div class="setting-row">
-        <div class="setting-box">
-          <div class="setting-label">Voice</div>
-          <select id="voiceSelect">
-            <option value="">Loading voices...</option>
-          </select>
-        </div>
-
-        <div class="setting-box">
-          <div class="setting-label">Speed: <span id="rateValue">0.85</span></div>
-          <input id="rateSlider" type="range" min="0.6" max="1.2" step="0.05" value="0.85" />
-        </div>
       </div>
 
       <div class="notice" id="noticeText">Choose a deck to start.</div>
@@ -655,7 +682,7 @@
     let cards = [];
     let currentIndex = 0;
     let voices = [];
-    let isAutoAudioEnabled = localStorage.getItem(AUDIO_STORAGE_KEY) === "true";
+    let isAutoAudioEnabled = false;
     let audioToken = 0;
     let reviewState = loadReviewState();
 
@@ -928,6 +955,7 @@
 
     function renderDeckMenu() {
       cancelAudio();
+      elements.backToDecksBtn.classList.add("hidden");
       elements.deckMenu.classList.remove("hidden");
       elements.studyCard.classList.add("hidden");
       elements.controls.classList.add("hidden");
@@ -968,6 +996,7 @@
     async function loadCardsFromDeck(deck) {
       cancelAudio();
       activeDeck = deck;
+      elements.backToDecksBtn.classList.remove("hidden");
       elements.statusText.textContent = "Loading";
       elements.deckMenu.classList.add("hidden");
       elements.studyCard.classList.remove("hidden");
