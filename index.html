@@ -19,12 +19,9 @@
       --button: #1c1c1e;
       --button-hover: #2c2c2e;
       --accent: #f5f5f7;
-      --danger: #ff9f0a;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -81,13 +78,8 @@
       flex: 0 0 auto;
     }
 
-    .back-icon:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .back-icon:active {
-      opacity: 0.75;
-    }
+    .back-icon:hover { background: rgba(255, 255, 255, 0.1); }
+    .back-icon:active { opacity: 0.75; }
 
     .progress-text {
       overflow: hidden;
@@ -110,7 +102,7 @@
 
     .card,
     .deck-menu,
-    .controls {
+    .review-panel {
       width: 100%;
       border-radius: 28px;
       background: var(--card);
@@ -118,13 +110,8 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
     }
 
-    .card {
-      padding: 34px;
-    }
-
-    .deck-menu {
-      padding: 28px;
-    }
+    .card { padding: 34px; }
+    .deck-menu { padding: 28px; }
 
     .menu-title {
       font-size: 34px;
@@ -220,14 +207,8 @@
       flex: 0 0 auto;
     }
 
-    .icon-button:hover {
-      transform: scale(1.03);
-    }
-
-    .icon-button:active {
-      opacity: 0.75;
-      transform: scale(0.98);
-    }
+    .icon-button:hover { transform: scale(1.03); }
+    .icon-button:active { opacity: 0.75; transform: scale(0.98); }
 
     .play-icon {
       width: 0;
@@ -293,9 +274,7 @@
       border: 1px solid var(--border-soft);
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
     .info-label {
       font-size: 12px;
@@ -365,19 +344,11 @@
       color: var(--subtext);
     }
 
-    .controls {
+    .review-panel {
       margin-top: 16px;
       padding: 16px;
       display: grid;
       gap: 12px;
-    }
-
-    .button-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
     }
 
     .review-row {
@@ -386,86 +357,32 @@
       gap: 10px;
     }
 
-    .action-btn,
     .review-btn {
       appearance: none;
       -webkit-appearance: none;
-      min-width: 118px;
-      height: 44px;
+      min-width: 0;
+      width: 100%;
+      min-height: 54px;
       border: none;
       outline: none;
-      padding: 0 18px;
+      padding: 8px 10px;
       border-radius: 999px;
       font-family: inherit;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--text);
       background: var(--button);
       cursor: pointer;
       transition: opacity 0.15s ease, background 0.15s ease;
+      line-height: 1.25;
     }
 
-    .review-btn {
-      min-width: 0;
-      width: 100%;
-      padding: 0 10px;
-      font-size: 14px;
-    }
+    .review-btn:hover { background: var(--button-hover); }
+    .review-btn:active { opacity: 0.75; }
 
-    .action-btn:hover,
-    .review-btn:hover {
-      background: var(--button-hover);
-    }
-
-    .action-btn:active,
-    .review-btn:active {
-      opacity: 0.75;
-    }
-
-    .action-btn.primary,
     .review-btn.primary {
       color: #1c1c1e;
       background: var(--accent);
-    }
-
-    .setting-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .setting-box {
-      padding: 14px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.045);
-      border: 1px solid var(--border-soft);
-    }
-
-    .setting-label {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    select,
-    input[type="range"] {
-      width: 100%;
-    }
-
-    select {
-      height: 36px;
-      border: 1px solid var(--border-soft);
-      border-radius: 12px;
-      background: var(--panel);
-      color: var(--text);
-      padding: 0 10px;
-      font-family: inherit;
-      font-size: 14px;
-    }
-
-    input[type="range"] {
-      accent-color: var(--accent);
     }
 
     .notice {
@@ -477,9 +394,7 @@
     }
 
     @media screen and (max-width: 560px) {
-      .review-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      .review-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media screen and (max-width: 480px) {
@@ -494,13 +409,9 @@
         border-radius: 26px;
       }
 
-      .menu-title {
-        font-size: 29px;
-      }
+      .menu-title { font-size: 29px; }
 
-      .word {
-        letter-spacing: -1.5px;
-      }
+      .word { letter-spacing: -1.5px; }
 
       .icon-button {
         width: 48px;
@@ -528,14 +439,6 @@
       .detail-block {
         padding: 18px;
         border-radius: 20px;
-      }
-
-      .setting-row {
-        grid-template-columns: 1fr;
-      }
-
-      .action-btn {
-        min-width: 104px;
       }
     }
   </style>
@@ -573,6 +476,7 @@
           <span class="chip" id="partOfSpeech">---</span>
           <span class="chip" id="pronunciation">---</span>
           <span class="chip" id="reviewStatus">New</span>
+          <span class="chip" id="intervalStatus">Learning</span>
         </div>
 
         <div class="meaning-block">
@@ -622,21 +526,12 @@
       </div>
     </section>
 
-    <section class="controls hidden" id="controls">
-      <button class="hidden" id="prevBtn" type="button"></button>
-      <button class="hidden" id="nextBtn" type="button"></button>
-      <button class="hidden" id="autoAudioBtn" type="button"></button>
-      <button class="hidden" id="replayBtn" type="button"></button>
-      <button class="hidden" id="copyBtn" type="button"></button>
-      <select class="hidden" id="voiceSelect"></select>
-      <input class="hidden" id="rateSlider" type="range" value="0.85" />
-      <span class="hidden" id="rateValue">0.85</span>
-
+    <section class="review-panel hidden" id="reviewPanel">
       <div class="review-row" id="reviewButtons">
-        <button class="review-btn" data-rating="hard" type="button">難しい<br>5分後</button>
-        <button class="review-btn" data-rating="normal" type="button">普通<br>1日後</button>
-        <button class="review-btn" data-rating="easy" type="button">簡単<br>2日後</button>
-        <button class="review-btn primary" data-rating="veryEasy" type="button">すごく簡単<br>3日後</button>
+        <button class="review-btn" data-rating="again" type="button">難しい<br>もう一度</button>
+        <button class="review-btn" data-rating="good" type="button">普通<br>覚えた</button>
+        <button class="review-btn" data-rating="easy" type="button">簡単<br>長め</button>
+        <button class="review-btn primary" data-rating="veryEasy" type="button">すごく簡単<br>さらに長め</button>
       </div>
 
       <div class="notice" id="noticeText">Choose a deck to start.</div>
@@ -645,22 +540,9 @@
 
   <script>
     const DECKS_SOURCE_URL = "./decks.json";
-    const REVIEW_STORAGE_KEY = "vocab-app-review-state-v1";
-    const AUDIO_STORAGE_KEY = "vocab-app-auto-audio-v1";
+    const REVIEW_STORAGE_KEY = "vocab-app-review-state-v2";
 
-    const REVIEW_INTERVALS = {
-      hard: 5 * 60 * 1000,
-      normal: 24 * 60 * 60 * 1000,
-      easy: 2 * 24 * 60 * 60 * 1000,
-      veryEasy: 3 * 24 * 60 * 60 * 1000
-    };
-
-    const REVIEW_LABELS = {
-      hard: "難しい",
-      normal: "普通",
-      easy: "簡単",
-      veryEasy: "すごく簡単"
-    };
+    const LEARNING_STEPS_MS = [60 * 1000, 10 * 60 * 1000];
 
     const DEFAULT_ALIASES = {
       number: ["番号", "number", "no", "id"],
@@ -682,9 +564,10 @@
     let cards = [];
     let currentIndex = 0;
     let voices = [];
-    let isAutoAudioEnabled = false;
     let audioToken = 0;
     let reviewState = loadReviewState();
+    let sessionQueue = [];
+    let sessionCounter = 0;
 
     const elements = {
       progressText: document.getElementById("progressText"),
@@ -692,12 +575,13 @@
       deckMenu: document.getElementById("deckMenu"),
       deckList: document.getElementById("deckList"),
       studyCard: document.getElementById("studyCard"),
-      controls: document.getElementById("controls"),
+      reviewPanel: document.getElementById("reviewPanel"),
       cardContent: document.getElementById("cardContent"),
       doneCard: document.getElementById("doneCard"),
       doneText: document.getElementById("doneText"),
       cardNumber: document.getElementById("cardNumber"),
       reviewStatus: document.getElementById("reviewStatus"),
+      intervalStatus: document.getElementById("intervalStatus"),
       wordText: document.getElementById("wordText"),
       partOfSpeech: document.getElementById("partOfSpeech"),
       pronunciation: document.getElementById("pronunciation"),
@@ -717,15 +601,7 @@
       speakWordBtn: document.getElementById("speakWordBtn"),
       speakExampleBtn: document.getElementById("speakExampleBtn"),
       backToDecksBtn: document.getElementById("backToDecksBtn"),
-      prevBtn: document.getElementById("prevBtn"),
-      nextBtn: document.getElementById("nextBtn"),
-      autoAudioBtn: document.getElementById("autoAudioBtn"),
-      replayBtn: document.getElementById("replayBtn"),
-      copyBtn: document.getElementById("copyBtn"),
       reviewButtons: document.getElementById("reviewButtons"),
-      voiceSelect: document.getElementById("voiceSelect"),
-      rateSlider: document.getElementById("rateSlider"),
-      rateValue: document.getElementById("rateValue"),
       noticeText: document.getElementById("noticeText")
     };
 
@@ -866,14 +742,63 @@
       });
     }
 
+    function defaultRecord() {
+      return {
+        state: "new",
+        stepIndex: 0,
+        intervalDays: 0,
+        easeFactor: 2.5,
+        dueAt: 0,
+        reviews: 0,
+        lapses: 0,
+        lastReviewedAt: null,
+        lastRating: null
+      };
+    }
+
     function getRecord(card) {
-      return reviewState[card.cardId] || null;
+      return reviewState[card.cardId] || defaultRecord();
+    }
+
+    function setRecord(card, record) {
+      reviewState[card.cardId] = record;
+      saveReviewState();
     }
 
     function isCardDue(card) {
       const record = getRecord(card);
-      if (!record || !record.dueAt) return true;
-      return Number(record.dueAt) <= Date.now();
+      if (record.state === "new") return true;
+      return Number(record.dueAt || 0) <= Date.now();
+    }
+
+    function addToSessionQueue(cardId, afterCards) {
+      sessionQueue = sessionQueue.filter(function (item) {
+        return item.cardId !== cardId;
+      });
+
+      sessionQueue.push({
+        cardId: cardId,
+        showAfter: sessionCounter + afterCards
+      });
+    }
+
+    function getQueuedCardIndex() {
+      if (!sessionQueue.length) return -1;
+
+      let queueIndex = sessionQueue.findIndex(function (item) {
+        return item.showAfter <= sessionCounter;
+      });
+
+      if (queueIndex === -1) {
+        const hasDueCards = cards.some(isCardDue);
+        if (hasDueCards) return -1;
+        queueIndex = 0;
+      }
+
+      const queued = sessionQueue.splice(queueIndex, 1)[0];
+      return cards.findIndex(function (card) {
+        return card.cardId === queued.cardId;
+      });
     }
 
     function getDueCards() {
@@ -881,6 +806,9 @@
     }
 
     function findNextDueIndex(startIndex) {
+      const queuedIndex = getQueuedCardIndex();
+      if (queuedIndex !== -1) return queuedIndex;
+
       if (!cards.length) return -1;
 
       for (let step = 1; step <= cards.length; step++) {
@@ -892,7 +820,20 @@
     }
 
     function findFirstDueIndex() {
+      const queuedIndex = getQueuedCardIndex();
+      if (queuedIndex !== -1) return queuedIndex;
       return cards.findIndex(isCardDue);
+    }
+
+    function formatDueText(dueAt) {
+      if (!dueAt || dueAt <= Date.now()) return "now";
+      const diff = dueAt - Date.now();
+      const minutes = Math.round(diff / (60 * 1000));
+      if (minutes < 60) return `${minutes} min`;
+      const hours = Math.round(diff / (60 * 60 * 1000));
+      if (hours < 24) return `${hours} h`;
+      const days = Math.round(diff / (24 * 60 * 60 * 1000));
+      return `${days} d`;
     }
 
     function getNextDueTimeText() {
@@ -900,12 +841,12 @@
 
       cards.forEach(function (card) {
         const record = getRecord(card);
-        if (!record || !record.dueAt) {
+        if (record.state === "new") {
           nextDueAt = Date.now();
           return;
         }
 
-        const dueAt = Number(record.dueAt);
+        const dueAt = Number(record.dueAt || 0);
         if (!nextDueAt || dueAt < nextDueAt) {
           nextDueAt = dueAt;
         }
@@ -924,7 +865,7 @@
       elements.reviewButtons.classList.add("hidden");
       elements.progressText.textContent = activeDeck ? `${activeDeck.title} · Done` : "Done";
       elements.doneText.textContent = getNextDueTimeText();
-      setNotice("今日表示できるカードはありません。復習予定日以降にまた開いてください。");
+      setNotice("今表示できるカードはありません。復習予定日以降にまた開いてください。");
     }
 
     function showStudyContent() {
@@ -955,10 +896,15 @@
 
     function renderDeckMenu() {
       cancelAudio();
+      activeDeck = null;
+      cards = [];
+      sessionQueue = [];
+      sessionCounter = 0;
+
       elements.backToDecksBtn.classList.add("hidden");
       elements.deckMenu.classList.remove("hidden");
       elements.studyCard.classList.add("hidden");
-      elements.controls.classList.add("hidden");
+      elements.reviewPanel.classList.add("hidden");
       elements.progressText.textContent = "Decks";
       elements.statusText.textContent = "Ready";
 
@@ -996,11 +942,14 @@
     async function loadCardsFromDeck(deck) {
       cancelAudio();
       activeDeck = deck;
+      sessionQueue = [];
+      sessionCounter = 0;
+
       elements.backToDecksBtn.classList.remove("hidden");
       elements.statusText.textContent = "Loading";
       elements.deckMenu.classList.add("hidden");
       elements.studyCard.classList.remove("hidden");
-      elements.controls.classList.remove("hidden");
+      elements.reviewPanel.classList.remove("hidden");
       elements.progressText.textContent = "Loading...";
       setNotice(`${deck.title} を読み込んでいます。`);
 
@@ -1050,6 +999,7 @@
       elements.partOfSpeech.textContent = "---";
       elements.pronunciation.textContent = "---";
       elements.reviewStatus.textContent = "No data";
+      elements.intervalStatus.textContent = "---";
       elements.meaningMain.textContent = "CSVデータがありません";
       elements.shortMeaning.textContent = "CSVの場所・ヘッダー・schema設定を確認してください。";
       elements.collocationText.textContent = "";
@@ -1086,7 +1036,10 @@
       elements.cardNumber.textContent = card.number ? `No. ${card.number}` : "No. --";
       elements.partOfSpeech.textContent = card.partOfSpeech || "---";
       elements.pronunciation.textContent = card.pronunciation || "---";
-      elements.reviewStatus.textContent = record ? `Review ${record.reviews || 0}` : "New";
+      elements.reviewStatus.textContent = `${record.state || "new"} · ${record.reviews || 0}`;
+      elements.intervalStatus.textContent = record.state === "review"
+        ? `${Math.round(record.intervalDays || 0)} d`
+        : formatDueText(record.dueAt);
       elements.meaningMain.textContent = card.meaning || "---";
       elements.shortMeaning.textContent = card.shortMeaning || "";
       elements.collocationText.textContent = card.collocation || "";
@@ -1103,51 +1056,28 @@
       toggleBlock(elements.memoBlock, card.memo);
 
       setNotice(`今すぐ学習できるカード: ${dueCards.length}枚`);
-
-      if (isAutoAudioEnabled) {
-        playCurrentCardSequence();
-      }
     }
 
     function loadVoices() {
-      voices = window.speechSynthesis.getVoices();
-
-      const englishVoices = voices.filter(function (voice) {
+      const allVoices = window.speechSynthesis.getVoices();
+      const englishVoices = allVoices.filter(function (voice) {
         return voice.lang && voice.lang.toLowerCase().startsWith("en");
-      });
-
-      elements.voiceSelect.innerHTML = "";
-
-      if (englishVoices.length === 0) {
-        const option = document.createElement("option");
-        option.value = "";
-        option.textContent = "Default English voice";
-        elements.voiceSelect.appendChild(option);
-        return;
-      }
-
-      englishVoices.forEach(function (voice) {
-        const option = document.createElement("option");
-        option.value = voice.name;
-        option.textContent = `${voice.name} (${voice.lang})`;
-        elements.voiceSelect.appendChild(option);
       });
 
       const preferred = englishVoices.find(function (voice) {
         const name = voice.name.toLowerCase();
-        return name.includes("samantha") || name.includes("daniel") || name.includes("google") || name.includes("natural");
+        return name.includes("google") || name.includes("samantha") || name.includes("daniel") || name.includes("natural");
       });
 
       if (preferred) {
-        elements.voiceSelect.value = preferred.name;
+        voices = [preferred, ...englishVoices.filter(function (v) { return v.name !== preferred.name; })];
+      } else {
+        voices = englishVoices;
       }
     }
 
     function getSelectedVoice() {
-      const selectedName = elements.voiceSelect.value;
-      return voices.find(function (voice) {
-        return voice.name === selectedName;
-      }) || null;
+      return voices[0] || null;
     }
 
     function cancelAudio() {
@@ -1174,7 +1104,7 @@
 
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = "en-US";
-        utterance.rate = Number(elements.rateSlider.value);
+        utterance.rate = 0.85;
         utterance.pitch = 1;
         utterance.volume = 1;
 
@@ -1202,71 +1132,113 @@
       });
     }
 
-    function wait(ms) {
-      return new Promise(function (resolve) {
-        setTimeout(resolve, ms);
-      });
+    function scheduleNewOrLearning(card, record, rating, now) {
+      if (rating === "again") {
+        record.state = "learning";
+        record.stepIndex = 0;
+        record.dueAt = now + LEARNING_STEPS_MS[0];
+        addToSessionQueue(card.cardId, 2);
+        return record;
+      }
+
+      if (rating === "good") {
+        if (record.state === "new") {
+          record.state = "learning";
+          record.stepIndex = 1;
+          record.dueAt = now + LEARNING_STEPS_MS[1];
+          addToSessionQueue(card.cardId, 3);
+        } else {
+          record.state = "review";
+          record.stepIndex = 0;
+          record.intervalDays = Math.max(1, record.intervalDays || 1);
+          record.dueAt = now + record.intervalDays * 24 * 60 * 60 * 1000;
+        }
+        return record;
+      }
+
+      if (rating === "easy") {
+        record.state = "review";
+        record.stepIndex = 0;
+        record.intervalDays = 2;
+        record.dueAt = now + 2 * 24 * 60 * 60 * 1000;
+        return record;
+      }
+
+      record.state = "review";
+      record.stepIndex = 0;
+      record.intervalDays = 4;
+      record.dueAt = now + 4 * 24 * 60 * 60 * 1000;
+      return record;
     }
 
-    async function playCurrentCardSequence() {
+    function scheduleReview(card, record, rating, now) {
+      const currentInterval = Math.max(1, Number(record.intervalDays || 1));
+      const ease = Math.max(1.3, Number(record.easeFactor || 2.5));
+
+      if (rating === "again") {
+        record.state = "relearning";
+        record.stepIndex = 0;
+        record.lapses = (record.lapses || 0) + 1;
+        record.intervalDays = Math.max(0.25, currentInterval * 0.5);
+        record.easeFactor = Math.max(1.3, ease - 0.2);
+        record.dueAt = now + LEARNING_STEPS_MS[0];
+        addToSessionQueue(card.cardId, 2);
+        return record;
+      }
+
+      if (rating === "good") {
+        record.state = "review";
+        record.intervalDays = Math.ceil(currentInterval * ease);
+        record.dueAt = now + record.intervalDays * 24 * 60 * 60 * 1000;
+        return record;
+      }
+
+      if (rating === "easy") {
+        record.state = "review";
+        record.easeFactor = ease + 0.15;
+        record.intervalDays = Math.ceil(currentInterval * (ease + 0.7));
+        record.dueAt = now + record.intervalDays * 24 * 60 * 60 * 1000;
+        return record;
+      }
+
+      record.state = "review";
+      record.easeFactor = ease + 0.3;
+      record.intervalDays = Math.ceil(currentInterval * (ease + 1.2));
+      record.dueAt = now + record.intervalDays * 24 * 60 * 60 * 1000;
+      return record;
+    }
+
+    function reviewCurrentCard(rating) {
       const card = getCurrentCard();
       if (!card) return;
 
-      const token = ++audioToken;
-
-      try {
-        await speak(card.word, token);
-        if (token !== audioToken) return;
-
-        await wait(650);
-        if (token !== audioToken) return;
-
-        await speak(card.example, token);
-        if (token !== audioToken) return;
-
-        elements.statusText.textContent = "Ready";
-      } catch (error) {
-        if (token === audioToken) {
-          setNotice("音声を再生できませんでした。別のVoiceを選ぶか、手動再生を試してください。");
-          elements.statusText.textContent = "Ready";
-        }
-      }
-    }
-
-    function updateAutoAudioButton() {
-      elements.autoAudioBtn.textContent = isAutoAudioEnabled ? "Auto Audio: On" : "Auto Audio: Off";
-      elements.autoAudioBtn.classList.toggle("primary", isAutoAudioEnabled);
-    }
-
-    function toggleAutoAudio() {
-      isAutoAudioEnabled = !isAutoAudioEnabled;
-      localStorage.setItem(AUDIO_STORAGE_KEY, String(isAutoAudioEnabled));
-      updateAutoAudioButton();
-
-      if (isAutoAudioEnabled) {
-        setNotice("Auto AudioをONにしました。カード表示時に単語と例文を自動再生します。");
-        playCurrentCardSequence();
-      } else {
-        cancelAudio();
-        setNotice("Auto AudioをOFFにしました。再生ボタンを押した時だけ音声を再生します。");
-      }
-    }
-
-    function goToPreviousCard() {
       cancelAudio();
-      if (!cards.length) return;
-      currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-      renderCard();
+
+      const now = Date.now();
+      const oldRecord = getRecord(card);
+      const record = { ...oldRecord };
+
+      record.reviews = (record.reviews || 0) + 1;
+      record.lastReviewedAt = now;
+      record.lastRating = rating;
+      record.easeFactor = Number(record.easeFactor || 2.5);
+
+      if (record.state === "review") {
+        scheduleReview(card, record, rating, now);
+      } else {
+        scheduleNewOrLearning(card, record, rating, now);
+      }
+
+      setRecord(card, record);
+      sessionCounter++;
+
+      const dueText = new Date(record.dueAt).toLocaleString();
+      setNotice(`${card.word}: ${rating} と記録しました。次回予定: ${dueText}`);
+
+      goToNextCard();
     }
 
     function goToNextCard() {
-      cancelAudio();
-      if (!cards.length) return;
-      currentIndex = (currentIndex + 1) % cards.length;
-      renderCard();
-    }
-
-    function goToNextDueCard() {
       const nextIndex = findNextDueIndex(currentIndex);
 
       if (nextIndex === -1) {
@@ -1276,50 +1248,6 @@
 
       currentIndex = nextIndex;
       renderCard();
-    }
-
-    function reviewCurrentCard(rating) {
-      const card = getCurrentCard();
-      if (!card) return;
-
-      const now = Date.now();
-      const oldRecord = getRecord(card) || {};
-      const interval = REVIEW_INTERVALS[rating] || REVIEW_INTERVALS.normal;
-      const dueAt = now + interval;
-
-      reviewState[card.cardId] = {
-        dueAt: dueAt,
-        lastReviewedAt: now,
-        lastRating: rating,
-        reviews: (oldRecord.reviews || 0) + 1,
-        interval: interval
-      };
-
-      saveReviewState();
-
-      const dueText = new Date(dueAt).toLocaleString();
-      setNotice(`${card.word}: ${REVIEW_LABELS[rating]} と記録しました。次回予定: ${dueText}`);
-
-      goToNextDueCard();
-    }
-
-    function copyCurrentWord() {
-      const card = getCurrentCard();
-      if (!card) return;
-
-      const word = card.word;
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(word)
-          .then(function () {
-            setNotice(`Copied: ${word}`);
-          })
-          .catch(function () {
-            setNotice("Copy failed.");
-          });
-      } else {
-        setNotice("Copy is not supported in this browser.");
-      }
     }
 
     elements.speakWordBtn.addEventListener("click", function () {
@@ -1343,15 +1271,6 @@
     });
 
     elements.backToDecksBtn.addEventListener("click", renderDeckMenu);
-    elements.prevBtn.addEventListener("click", goToPreviousCard);
-    elements.nextBtn.addEventListener("click", goToNextCard);
-    elements.autoAudioBtn.addEventListener("click", toggleAutoAudio);
-
-    elements.replayBtn.addEventListener("click", function () {
-      playCurrentCardSequence();
-    });
-
-    elements.copyBtn.addEventListener("click", copyCurrentWord);
 
     elements.reviewButtons.addEventListener("click", function (event) {
       const button = event.target.closest("button[data-rating]");
@@ -1359,18 +1278,11 @@
       reviewCurrentCard(button.dataset.rating);
     });
 
-    elements.rateSlider.addEventListener("input", function () {
-      elements.rateValue.textContent = elements.rateSlider.value;
-    });
-
     if ("speechSynthesis" in window) {
       loadVoices();
       window.speechSynthesis.onvoiceschanged = loadVoices;
-    } else {
-      elements.voiceSelect.innerHTML = '<option value="">Not supported</option>';
     }
 
-    updateAutoAudioButton();
     loadDecks();
   </script>
 </body>

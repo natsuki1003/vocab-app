@@ -1,19 +1,36 @@
-# Vocabulary Deck Player - Stage 4
+# Vocabulary Deck Player - Stage 5
 
 ## 今回の変更
 
-- Prev / Next / Auto Audio / Replay / Copy ボタンを画面から削除しました。
-- Decksボタンをやめて、画面左上に「←」戻るボタンを追加しました。
-- 操作エリアを4つの復習ボタン中心にして、見た目をシンプルにしました。
+忘却曲線を意識したAnki風スケジューラーを強化しました。
 
-## 残っている操作
+### 追加されたカード状態
 
-- 単語横の再生ボタン
-- 例文横の再生ボタン
-- 難しい / 普通 / 簡単 / すごく簡単 の4つの復習ボタン
-- 左上の「←」でデッキ一覧に戻る
+- new: 未学習
+- learning: 学習中
+- review: 復習中
+- relearning: 間違えた後の再学習
+
+### ボタンの動き
+
+- 難しい: learning/relearningに入り、セッション内で数枚後に再表示されます
+- 普通: 学習中なら次のステップへ進み、復習中なら間隔を伸ばします
+- 簡単: reviewに入り、普通より長めの間隔になります
+- すごく簡単: さらに長めの間隔になります
+
+### 保存される情報
+
+localStorageに以下を保存します。
+
+- state
+- stepIndex
+- intervalDays
+- easeFactor
+- dueAt
+- reviews
+- lapses
+- lastRating
 
 ## 注意
 
-Auto Audioボタンは削除したため、この版では自動音声再生はしません。
-音声は再生ボタンを押した時だけ流れます。
+これはAnki完全互換ではなく、Anki風の簡易スケジューラーです。
